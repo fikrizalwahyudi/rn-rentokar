@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "487726989792",
+    "firebase_url": "https://rentokar-58839.firebaseio.com",
+    "project_id": "rentokar-58839",
+    "storage_bucket": "rentokar-58839.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487726989792:android:c63bfc03a4722ab7",
+        "android_client_info": {
+          "package_name": "com.rentokar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487726989792-hue95bmq9bilqovhrmsvfopk2sl1jfnt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rentokar",
+            "certificate_hash": "dd2ff94913aa4b9d845428d44c74d1ed6cdfe0c4"
+          }
+        },
+        {
+          "client_id": "487726989792-q2ea4s6nq3u5vh7bieaic5b49vt8dkbj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rentokar",
+            "certificate_hash": "fe7fec5d27f68997f4d0361b4127ae817d24be3f"
+          }
+        },
+        {
+          "client_id": "487726989792-3tnrt4n44kesgf6ij039956eeevn5a90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw0DdFmsmdMPFPTNI3TVnzVhMdFWypz9k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487726989792-3tnrt4n44kesgf6ij039956eeevn5a90.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487726989792:android:02c3d578652d5b23",
+        "android_client_info": {
+          "package_name": "com.rentokarreact"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487726989792-5pa953pu22c7j275g8nlb40jemlennj2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rentokarreact",
+            "certificate_hash": "8adc0ba775573f4dd584fec99412241c7111c551"
+          }
+        },
+        {
+          "client_id": "487726989792-3tnrt4n44kesgf6ij039956eeevn5a90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw0DdFmsmdMPFPTNI3TVnzVhMdFWypz9k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487726989792-3tnrt4n44kesgf6ij039956eeevn5a90.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
