@@ -22,28 +22,47 @@ import Category from './components/Explore/Category';
 import Home from './components/Explore/Home';
 import Tag from './components/Explore/Tag';
 
-import * as CategoryService from '../../services/CategoryServices';
+import * as categoryService from '../../services/DataServices';
 
 const { height, width } = Dimensions.get('window')
+
 
 class Explore extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            listCategory: [],
             userInfo: null,
             error: null
         };
+
       }
     
-
-    componentWillMount() {
-        
-        // CategoryService.getCategory((result)=>{
-        //     alert(result);
-        // })
+    componentDidMount() {
+        this.listenForCategory();
     }
 
+
+    componentWillMount() {
+       
+    }
+
+    listenForCategory() {
+        categoryService.getListCategory().on('value', (dataSnapshot) => {
+            var listCat = [];
+            dataSnapshot.forEach((child) => {
+                listCat.push({
+                    name: child.val().categoryName,
+                    _key: child.key
+                });
+            });
+            
+            this.setState({
+                listCategory:listCat
+            });
+        });
+    }
 
     render() {
         return (
@@ -70,41 +89,23 @@ class Explore extends Component {
                     )}>
                     <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 20 }}>
                         <Text style={{ fontSize: 24, fontWeight: '700', paddingHorizontal: 20 }}>
-                            Category
+                            Category 
                         </Text>
 
                         <View style={{ height: 130, marginTop: 20 }}>
                             <ScrollView
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}
-                            >
-                                <Category imageUri={require('../../assets/img/home.jpg')}
-                                    name="Home"
-                                />
-                                <Category imageUri={require('../../assets/img/experiences.jpg')}
-                                    name="Experiences"
-                                />
-                                <Category imageUri={require('../../assets/img/restaurant.jpg')}
-                                    name="Resturant"
-                                />
-                                <Category imageUri={require('../../assets/img/home.jpg')}
-                                    name="Home"
-                                />
-                                <Category imageUri={require('../../assets/img/experiences.jpg')}
-                                    name="Experiences"
-                                />
-                                <Category imageUri={require('../../assets/img/restaurant.jpg')}
-                                    name="Resturant"
-                                />
-                                <Category imageUri={require('../../assets/img/home.jpg')}
-                                    name="Home"
-                                />
-                                <Category imageUri={require('../../assets/img/experiences.jpg')}
-                                    name="Experiences"
-                                />
-                                <Category imageUri={require('../../assets/img/restaurant.jpg')}
-                                    name="Resturant"
-                                />
+                            >   
+                            {
+                                this.state.listCategory.map((e, key)=>{
+                                    return(
+                                        <Category  imageUri={require('../../assets/img/experiences.jpg')} key={key} name={e.name}  />
+                                    )
+                                })
+                            }
+                                
+                                
                             </ScrollView>
                         </View>
                         

@@ -5,7 +5,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 
-import {getData} from '../services/Auth';
+
 
 class Login extends Component {
   constructor(props) {
@@ -18,8 +18,7 @@ class Login extends Component {
   
 
   async componentDidMount() {
-    // this._configureGoogleSignIn();
-    // await this._getCurrentUser();
+      
   }
 
   _signIn = async () => {
