@@ -5,6 +5,8 @@ import {Textarea, Container, Content, List, ListItem, InputGroup, ScrollableTab,
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 
+import { connect } from 'react-redux';
+
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -199,4 +201,9 @@ class TabSettings extends Component {
   }
 } 
 
-export default Profile;
+const mapStateToProps = (state) => {
+  const { users } = state
+  return { users }
+};
+
+export default connect(mapStateToProps)(Profile);

@@ -24,8 +24,9 @@ import Tag from './components/Explore/Tag';
 
 import * as categoryService from '../../services/DataServices';
 
-const { height, width } = Dimensions.get('window')
+import { connect } from 'react-redux';
 
+const { height, width } = Dimensions.get('window')
 
 class Explore extends Component {
 
@@ -111,10 +112,11 @@ class Explore extends Component {
                         
                         <View style={{ marginTop: 40, paddingHorizontal: 20 }}>
                             <Text style={{ fontSize: 24, fontWeight: '700' }}>
-                                Introducing Rentokar
+                                Introducing Rentokar {this.props.users.current[0]}
                             </Text>
                             <Text style={{ fontWeight: '100', marginTop: 10 }}>
                                 A new selection of homes verified for quality & comfort
+                                {/* {this.props.state} */}
 
                             </Text>
                             <View style={{ width: width - 40, height: 200, marginTop: 20 }}>
@@ -174,7 +176,6 @@ class Explore extends Component {
         );
     }
 }
-export default Explore;
 
 const styles = StyleSheet.create({
     container: {
@@ -183,3 +184,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+const mapStateToProps = (state) => {
+    const { users } = state
+    return { users }
+};
+
+export default connect(mapStateToProps)(Explore);
+

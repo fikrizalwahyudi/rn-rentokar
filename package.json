@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "firebase": "^5.4.2",
+    "lodash": "^4.17.10",
     "native-base": "^2.8.0",
     "react": "16.4.1",
     "react-native": "0.56.0",
@@ -20,7 +21,9 @@
     "react-native-star-rating": "^1.0.9",
     "react-native-vector-icons": "^5.0.0",
     "react-navigation": "^2.12.1",
-    "react-navigation-material-bottom-tabs": "^0.3.0"
+    "react-navigation-material-bottom-tabs": "^0.3.0",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "7.0.0-beta.47",

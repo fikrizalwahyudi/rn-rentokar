@@ -3,8 +3,13 @@ import { View, StyleSheet, Image, Alert, Platform, Dimensions,ImageBackground } 
 import { Container,  Content, Form, Item, Input, Label, Button, Text} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
+import * as _ from 'lodash';
+
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addUser } from '../actions/UserAction';
 
 
 class Login extends Component {
@@ -18,7 +23,7 @@ class Login extends Component {
   
 
   async componentDidMount() {
-      
+
   }
 
   _signIn = async () => {
@@ -27,7 +32,20 @@ class Login extends Component {
       const userInfo = await GoogleSignin.signIn();
       this.setState({ userInfo, error: null });
       if(userInfo){
+        console.log(userInfo.user.email);
+        var profile = {
+            email:userInfo.user.email,
+            id:userInfo.user.id,
+            fullName:userInfo.user.name
+        }
+
+        const array = _.values(profile);
+        
+        console.log(array);
+
+        this.props.addUser(array);
         this.props.navigation.navigate('App');
+        
       }
     } catch (error) {
         
@@ -63,7 +81,6 @@ class Login extends Component {
     return (
       
         <Container >
-        
           <Content >
                 <Grid>
                     <Col style={styles.grid}>
@@ -74,7 +91,7 @@ class Login extends Component {
                     <Col>
                         <Form style={styles.input}>
                             <Item floatingLabel >
-                                <Label style={{color:'grey'}}>Username</Label>
+                                <Label style={{color:'grey'}}>Username </Label>
                                 <Input />
                             </Item>
                             <Item floatingLabel >
@@ -82,12 +99,11 @@ class Login extends Component {
                                 <Input />
                             </Item>
                         </Form>
-
                         <Button style={styles.buttonSubmit} block onPress={this._onSubmit}>
-                            <Text  >Submit</Text>
+                            <Text  >Submit </Text>
                         </Button>
                         <View style={{flex:1,justifyContent:'center', alignItems:'center', marginTop:10}}>
-                            <Text >OR</Text>
+                            <Text >OR </Text>
                         </View>
                         <GoogleSigninButton
                             style={{ width: 300, alignSelf:'center', height: 48, marginTop:10 }}
@@ -97,7 +113,6 @@ class Login extends Component {
                     </Col>
                 </Grid>
             </Content>
-            
         </Container>
     ); 
   }
@@ -140,4 +155,15 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Login;
+const mapStateToProps = (state) => {
+    const { users } = state
+    return { users }
+};
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+      addUser,
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);;

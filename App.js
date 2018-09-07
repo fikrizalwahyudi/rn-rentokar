@@ -13,6 +13,12 @@ import Profile from './src/screens/customers/Profile';
 // import Intro from './src/screens/Intro';
 // import {AuthLoadingScreen} from './src/'
 
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import UserReducer from './src/reducers/UserReducer';
+
+const store = createStore(UserReducer);
+
 export default class App extends Component {
 
   constructor(){
@@ -42,8 +48,9 @@ export default class App extends Component {
     StatusBar.setBackgroundColor('#de1587');
     StatusBar.setBarStyle('dark-content');
     return (
-      <AuthLoadingScreen />
-      
+      <Provider store={ store }>
+        <AuthLoadingScreen />
+      </Provider>
     );
   }
 }
