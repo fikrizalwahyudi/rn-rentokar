@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, ScrollView} from 'react-native';
-
+import {Platform, TouchableOpacity, View, ScrollView} from 'react-native';
+import Avatar from 'react-native-interactive-avatar';
 import {Textarea, Container, Content, List, ListItem, InputGroup, ScrollableTab, Tab, Tabs, Header,Icon, H3, H2, H1, Form, Item, Input, Label, Button, Text, Thumbnail, Left, Body, Right, Switch } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
+import firebase from 'react-native-firebase';
+
+import * as ImagePick from 'react-native-image-picker';
+import ImagePicker  from 'react-native-image-crop-picker';
+// import RNFetchBlob from 'rn-fetch-blob'
 
 import { connect } from 'react-redux';
+
+
+// const Blob = RNFetchBlob.polyfill.Blob;
+// const fs = RNFetchBlob.fs;
+// window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+// window.Blob = Blob;
 
 class Profile extends Component {
   constructor(props) {
@@ -13,11 +24,35 @@ class Profile extends Component {
     this.state = {
     };
   }
+  
+  pickImageHandler = () => {
+    ImagePick.showImagePicker({title: "Pick an Image", maxWidth: 800, maxHeight: 600}, res => {
+      if (res.didCancel) {
+        // console.log("User cancelled!");
+      } else if (res.error) {
+        // console.log("Error", res.error);
+      } else {
+        ImagePicker.openCropper({
+          path: res.uri.toString(),
+          width: 300,
+          height: 400
+        }).then(image => {
+          uploadImage(image);
+        });
+        // uploadImage(res.uri);
+ 
+      }
+    });
+  }
+  
+
+  
+  
 
   _signOut = async () => {
     try {
-    //   await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
+      await firebase.auth().signOut();
+      GoogleSignin.signOut();
       this.setState({ userInfo: null, error: null });
       this.props.navigation.navigate('Login');
     } catch (error) {
@@ -36,23 +71,25 @@ class Profile extends Component {
               <Col size={15}>
               </Col>
               <Col size={70}>
-                <H2 style={{marginTop:15,alignSelf:'center', color:'white'}}>Fikrizal</H2>      
+                <TouchableOpacity onPress={this.pickImageHandler} >
+                  <Thumbnail source={require('../../assets/img/logo-black.png')} style={{borderColor:'white', borderRadius:100, borderWidth:5, marginTop:0,alignSelf:'center', width:120, height:120}}/>
+                </TouchableOpacity>
               </Col>
               <Col size={15}>
                 <TouchableOpacity onPress={this._signOut}>
                   <Icon name="exit" size={20} style={{ color:'white', alignSelf:'center'}} />
                 </TouchableOpacity>
-                
               </Col>
             </Row>
             <Row >
-              <Col>
-                <Thumbnail source={require('../../assets/img/logo-black.png')} style={{marginTop:-50,alignSelf:'center', width:120, height:120}}/>
+              <Col >
+                <H2 style={{marginTop:25,alignSelf:'center', color:'white'}}>Fikrizal</H2>      
               </Col>
             </Row>
           </Grid>
           
         </Content>
+        
         <MyTabs />
         
       </Container>
@@ -200,6 +237,38 @@ class TabSettings extends Component {
     )
   }
 } 
+
+
+
+const uploadImage = (uri, mime = 'application/octet-stream') => {
+  return new Promise((resolve, reject) => {
+      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      let currentUser = firebase.auth().currentUser;
+      const sessionId = new Date().getTime();
+      let uploadBlob = null;
+      const imageRef = firebase.storage().ref('images').child(`${currentUser.uid}.jpg`);
+      imageRef.put(uri, { contentType: mime }).then((res=>{
+        console.log(res);
+        storeReference(res.downloadURL, sessionId);
+      }));
+  })
+}
+
+const storeReference = (downloadUrl, sessionId) => {
+  let imageRef = firebase.storage().ref('profilePicture').child('profileFile')
+  let currentUser = firebase.auth().currentUser
+  let image = {
+    type: 'image',
+    url: downloadUrl,
+    createdAt: sessionId,
+    user: {
+      id: currentUser.uid,
+      email: currentUser.email
+    }
+  }
+  firebase.database().ref('users').push(image);
+}
+
 
 const mapStateToProps = (state) => {
   const { users } = state

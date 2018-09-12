@@ -4,7 +4,7 @@ import {View, ScrollView} from 'react-native';
 import {Title, Textarea, Container, Content, List, ListItem, InputGroup, ScrollableTab, Tab, Tabs, Header,Icon, H3, H2, H1, Form, Item, Input, Label, Button, Text, Thumbnail, Left, Body, Right, Switch } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
-class Inquiry extends Component {
+class ProductDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,9 +16,19 @@ class Inquiry extends Component {
       <Container >
         <Header hasTabs style={{paddingTop:15, backgroundColor:'#de1587'}} 
           androidStatusBarColor="#de1587">
-          <Title>
-            Transaksi
-          </Title>
+          <Left>
+            <Button>
+              <Icon name='arrow-back' />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Header</Title>
+          </Body>
+          <Right>
+            <Button>
+              <Icon name='menu' />
+            </Button>
+          </Right>
         </Header>
         <MyTabs />
       </Container>
@@ -260,4 +270,4 @@ class TabThree extends Component {
   }
 } 
 
-export default Inquiry;
+export default ProductDetail;

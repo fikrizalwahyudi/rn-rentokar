@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView} from 'react-native';
 
-import {Textarea, Container, Content, List, ListItem, InputGroup, ScrollableTab, Tab, Tabs, Header,Icon, H3, H2, H1, Form, Item, Input, Label, Button, Text, Thumbnail, Left, Body, Right, Switch } from 'native-base';
+import {Title, Textarea, Container, Content, List, ListItem, InputGroup, ScrollableTab, Tab, Tabs, Header,Icon, H3, H2, H1, Form, Item, Input, Label, Button, Text, Thumbnail, Left, Body, Right, Switch } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 class Activity extends Component {
@@ -14,6 +14,12 @@ class Activity extends Component {
   render() {
     return (
       <Container >
+        <Header hasTabs style={{paddingTop:15, backgroundColor:'#de1587'}} 
+          androidStatusBarColor="#de1587">
+          <Title>
+            Activity
+          </Title>
+        </Header>
         <MyTabs />
       </Container>
     );
@@ -24,6 +30,7 @@ class MyTabs extends Component {
   render() {
     return(
       // <Container>
+        
         <Tabs locked={false}  >
           <Tab heading="Message" tabStyle={{backgroundColor: '#de1587'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#de1587'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
             <TabOne />

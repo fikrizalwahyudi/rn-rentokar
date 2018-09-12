@@ -31,47 +31,11 @@
           }
         },
         {
-          "client_id": "487726989792-3tnrt4n44kesgf6ij039956eeevn5a90.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDw0DdFmsmdMPFPTNI3TVnzVhMdFWypz9k"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "487726989792-3tnrt4n44kesgf6ij039956eeevn5a90.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:487726989792:android:02c3d578652d5b23",
-        "android_client_info": {
-          "package_name": "com.rentokarreact"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "487726989792-5pa953pu22c7j275g8nlb40jemlennj2.apps.googleusercontent.com",
+          "client_id": "487726989792-p0gkbjbrt85j214tb94sovdq7craomck.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.rentokarreact",
-            "certificate_hash": "8adc0ba775573f4dd584fec99412241c7111c551"
+            "package_name": "com.rentokar",
+            "certificate_hash": "f793b39cf7ce06a19306b7792425fd78640214a7"
           }
         },
         {

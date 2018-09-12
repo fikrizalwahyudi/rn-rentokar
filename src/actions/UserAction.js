@@ -1,6 +1,20 @@
-export const addUser = userIndex => (
+export const addUser = data => (
     {
         type: 'ADD_USER',
-        payload: userIndex,
+        payload: data
+    }
+);
+
+export const signUpWithGoogle = data => (
+    {
+        type: 'SIGNUP_GOOGLE',
+        payload: data
+    }
+);
+
+export const signIn = data => (
+    {
+        type: 'SIGNIN',
+        payload: data
     }
 );

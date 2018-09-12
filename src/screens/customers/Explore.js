@@ -11,7 +11,8 @@ import {
     ScrollView,
     Image,
     Dimensions,
-    Animated
+    Animated,
+    TouchableOpacity
 } from "react-native";
 
 import {Header,Button, Container, Content, Item, Input, Icon, Left, Right, Body} from 'native-base';
@@ -28,7 +29,8 @@ import { connect } from 'react-redux';
 
 const { height, width } = Dimensions.get('window')
 
-class Explore extends Component {
+
+export default class Explore extends React.Component {
 
     constructor(props) {
         super(props);
@@ -63,6 +65,10 @@ class Explore extends Component {
                 listCategory:listCat
             });
         });
+    }
+
+    goToProductDetail() {
+        this.props.navigation.navigate('ProductDetail');
     }
 
     render() {
@@ -112,7 +118,8 @@ class Explore extends Component {
                         
                         <View style={{ marginTop: 40, paddingHorizontal: 20 }}>
                             <Text style={{ fontSize: 24, fontWeight: '700' }}>
-                                Introducing Rentokar {this.props.users.current[0]}
+                                Introducing Rentokar 
+                                {/* {this.props.state.users.email}  */}
                             </Text>
                             <Text style={{ fontWeight: '100', marginTop: 10 }}>
                                 A new selection of homes verified for quality & comfort
@@ -133,12 +140,14 @@ class Explore extends Component {
                             Homes around the world
                         </Text>
                         <View style={{ paddingHorizontal: 20, marginTop: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                            <TouchableOpacity onPress={this.goToProductDetail} > 
                             <Home width={width}
                                 name="The Cozy Place"
                                 type="PRIVATE ROOM - 2 BEDS"
                                 price={82}
                                 rating={4}
                             />
+                            </ TouchableOpacity  > 
                             <Home width={width}
                                 name="The Cozy Place"
                                 type="PRIVATE ROOM - 2 BEDS"
@@ -186,9 +195,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-    const { users } = state
-    return { users }
+    // console.log("tessss", state);
+    return {
+        state
+    } 
 };
 
-export default connect(mapStateToProps)(Explore);
+// export default connect(mapStateToProps)(Explore);
 

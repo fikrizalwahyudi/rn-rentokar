@@ -6,71 +6,96 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import * as _ from 'lodash';
 
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
+import firebase from 'react-native-firebase';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addUser } from '../actions/UserAction';
+import { addUser, signUpWithGoogle } from '../actions/UserAction';
 
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        userInfo: null,
-        error: null
-    };
-  }
-  
-
-  async componentDidMount() {
-
-  }
-
-  _signIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      this.setState({ userInfo, error: null });
-      if(userInfo){
-        console.log(userInfo.user.email);
-        var profile = {
-            email:userInfo.user.email,
-            id:userInfo.user.id,
-            fullName:userInfo.user.name
-        }
-
-        const array = _.values(profile);
-        
-        console.log(array);
-
-        this.props.addUser(array);
-        this.props.navigation.navigate('App');
-        
-      }
-    } catch (error) {
-        
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // sign in was cancelled
-        alert('cancelled');
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation in progress already
-        alert('in progress');
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        alert('play services not available or outdated');
-      } else {
-        Alert.alert('Something went wrong', error.toString());
-        this.setState({
-          error,
-        });
-      }
+    constructor(props) {
+        super(props);
+        this.state = {
+            userInfo: null,
+            error: null
+        };
     }
-  };
-
-
-  _onSubmit = () =>{
-    // this.props.navigation.navigate('Verification');
-    // var a = this.g
-  }
+    
+    
+    async componentDidMount() {
+        
+    }
+    
+    // onLoginOrRegister = () => {
+    //     GoogleSignin.signIn()
+    //     .then((data) => {
+    //         // Create a new Firebase credential with the token
+    //         const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
+    //         // Login with the credential
+    //         return firebase.auth().signInWithCredential(credential);
+    //     })
+    //     .then((user) => {
+    //         // If you need to do anything with the user, do it here
+    //         // The user will be logged in automatically by the
+    //         // `onAuthStateChanged` listener we set up in App.js earlier
+    //     })
+    //     .catch((error) => {
+    //         const { code, message } = error;
+    //         // For details of error codes, see the docs
+    //         // The message contains the default Firebase string
+    //         // representation of the error
+    //     });
+    // }
+    
+    
+    _signIn = async () => {
+        try {
+            await GoogleSignin.hasPlayServices();
+            await GoogleSignin.signIn()
+            .then((data) => {
+                // Create a new Firebase credential with the token
+                const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
+                // Login with the credential
+                return firebase.auth().signInAndRetrieveDataWithCredential(credential);
+            }).then((user)=>{
+            
+                var profile = {
+                    email:user.user.email,
+                    id:user.user.uid,
+                    fullName:user.user.displayName,
+                    photoURL:user.user.photoURL
+                }
+                // const array = _.values(profile);
+                // console.log(array);
+                this.props.signUpWithGoogle(profile);
+                console.log(profile);
+                this.props.navigation.navigate('App');
+            })
+        } catch (error) {
+            
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // sign in was cancelled
+                alert('cancelled');
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation in progress already
+                alert('in progress');
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                alert('play services not available or outdated');
+            } else {
+                Alert.alert('Something went wrong', error.toString());
+                this.setState({
+                    error,
+                });
+            }
+        }
+    };
+    
+    
+    _onSubmit = () =>{
+        // this.props.navigation.navigate('Verification');
+        // var a = this.g
+    }
   
   render() {
     const {height: screenHeight} = Dimensions.get('window');
@@ -162,7 +187,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-      addUser,
+      addUser,signUpWithGoogle
     }, dispatch)
 );
 

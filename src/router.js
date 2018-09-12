@@ -12,17 +12,19 @@ import {
 import { TabNavigator, StackNavigator, createBottomTabNavigator , createStackNavigator, createSwitchNavigator} from 'react-navigation';
 import { Icon } from 'native-base';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+
 import { GoogleSignin} from 'react-native-google-signin';
+import firebase from 'react-native-firebase'
 
 // import Feed from '../screens/Feed';
 // import Settings from '../screens/Settings';
 // import UserDetail from '../screens/UserDetail';
 // import Me from '../screens/Me';
-
 import Explore from './screens/customers/Explore';
 import Activity from './screens/customers/Activity';
 import Inquiry from './screens/customers/Inquiry';
 import Profile from './screens/customers/Profile';
+import ProductDetail from './screens/customers/ProductDetail';
 
 import Login from './screens/Login';
 import Verification from './screens/Verification';
@@ -40,7 +42,7 @@ export const Tabs = createMaterialBottomTabNavigator({
   Inquiry: {
     screen: Inquiry,
     navigationOptions: {
-      tabBarLabel: 'Inquiry',
+      tabBarLabel: 'Transaksi',
       tabBarIcon: ({ tintColor }) => <Icon name="apps" size={35} style={{color:tintColor}} />,
     },
   },
@@ -68,6 +70,15 @@ export const Tabs = createMaterialBottomTabNavigator({
   shifting: true
 });
 
+export const TabStack = createStackNavigator({
+  Explore: {
+    screen: Explore
+  },
+  ProductDetail: {
+    screen: ProductDetail
+  }
+})
+
 export const LoginStack = createStackNavigator({
   Login: {
     screen: Login
@@ -87,17 +98,6 @@ export const LoginStack = createStackNavigator({
     initialRouteName: 'Intro'
 });
 
-// export const Root = createStackNavigator({
-//   Tabs: {
-//     screen: Tabs,
-//   },
-//   Login: {
-//     screen: LoginStack,
-//   },
-// }, {
-//   mode: 'modal',
-//   headerMode: 'none',
-// });
 
 class AuthLoadingScreen extends React.Component {
   constructor() {
@@ -108,14 +108,18 @@ class AuthLoadingScreen extends React.Component {
   // Fetch the token from storage then navigate to our appropriate place
   async _getCurrentUser() {
     try {
-      const users = await GoogleSignin.signInSilently();
-      
-      // alert(users);
-      if(!users){
-        this.props.navigation.navigate('Auth');
-      }else{
-        this.props.navigation.navigate('App');
-      }
+      var self = this;
+      // const users = await GoogleSignin.signInSilently();
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // console.log(user.providerData);
+          // var u = firebase.auth().currentUser;
+          // console.log(u)
+          self.props.navigation.navigate('App');
+        } else {
+          self.props.navigation.navigate('Auth');
+        }
+      });
     
     } catch (error) {
       alert(error)
