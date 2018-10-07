@@ -13,6 +13,7 @@ import Profile from './src/screens/customers/Profile';
 // import Intro from './src/screens/Intro';
 // import {AuthLoadingScreen} from './src/'
 
+
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import UserReducer from './src/reducers/UserReducer';
@@ -45,7 +46,7 @@ export default class App extends Component {
 
   render() {
     // StatusBar.setTranslucent(true);
-    StatusBar.setBackgroundColor('#de1587');
+    StatusBar.setBackgroundColor('#d32f2f');
     StatusBar.setBarStyle('dark-content');
     return (
       <Provider store={ store }>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Image, Alert, Platform, Dimensions,ImageBackground } from 'react-native';
 import { Container,  Content, Form, Item, Input, Label, Button, Text} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import t from 'tcomb-form-native';
 
 import * as _ from 'lodash';
 
@@ -12,6 +13,23 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addUser, signUpWithGoogle } from '../actions/UserAction';
 
+import * as dataServices from '../services/DataServices';
+
+const TForm = t.form.Form;
+
+const FormUser = t.struct({
+    email: t.String,
+    password: t.String
+});
+
+const options = {
+    fields: {
+      password: {
+        password: true,
+        secureTextEntry: true
+      }
+    }
+};
 
 class Login extends Component {
     constructor(props) {
@@ -59,18 +77,32 @@ class Login extends Component {
                 // Login with the credential
                 return firebase.auth().signInAndRetrieveDataWithCredential(credential);
             }).then((user)=>{
-            
+                console.log(user.user.providerData);
+                
+                // user.providerData.forEach(function (profile) {
+                //     console.log("Sign-in provider: " + profile.providerId);
+                //     console.log("  Provider-specific UID: " + profile.uid);
+                //     console.log("  Name: " + profile.displayName);
+                //     console.log("  Email: " + profile.email);
+                //     console.log("  Photo URL: " + profile.photoURL);
+                //   });
                 var profile = {
                     email:user.user.email,
                     id:user.user.uid,
                     fullName:user.user.displayName,
-                    photoURL:user.user.photoURL
+                    photoURL:user.user.photoURL,
+                    providerId:"default"
+                }
+                if(user.user.providerData.providerId){
+                    profile.providerId = user.user.providerData.providerId
                 }
                 // const array = _.values(profile);
                 // console.log(array);
                 this.props.signUpWithGoogle(profile);
-                console.log(profile);
-                this.props.navigation.navigate('App');
+                // console.log(profile);
+                dataServices.checkUser(profile).then((res)=>{
+                    this.props.navigation.navigate(res);
+                })
             })
         } catch (error) {
             
@@ -93,7 +125,7 @@ class Login extends Component {
     
     
     _onSubmit = () =>{
-        // this.props.navigation.navigate('Verification');
+        this.props.navigation.navigate('Verification');
         // var a = this.g
     }
   
@@ -114,7 +146,10 @@ class Login extends Component {
                 </Grid>
                 <Grid style={styles.form}>
                     <Col>
-                        <Form style={styles.input}>
+                        <View style={styles.tform}>
+                            <TForm type={FormUser} options={options} /> 
+                        </View>
+                        {/* <Form style={styles.input}>
                             <Item floatingLabel >
                                 <Label style={{color:'grey'}}>Username </Label>
                                 <Input />
@@ -123,9 +158,12 @@ class Login extends Component {
                                 <Label style={{color:'grey'}}>Password</Label>
                                 <Input />
                             </Item>
-                        </Form>
+                        </Form> */}
                         <Button style={styles.buttonSubmit} block onPress={this._onSubmit}>
-                            <Text  >Submit </Text>
+                            <Text  >Login </Text>
+                        </Button>
+                        <Button style={styles.buttonRegister} block onPress={this._onSubmit}>
+                            <Text  >Register </Text>
                         </Button>
                         <View style={{flex:1,justifyContent:'center', alignItems:'center', marginTop:10}}>
                             <Text >OR </Text>
@@ -164,13 +202,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width:200,
         height:35,
-        marginTop: 50,
+        marginTop: 20,
     },
     buttonSubmit: {
-        marginTop: 20,
+        marginTop: 10,
         alignSelf: 'center',
         width:300
         
+    },
+    buttonRegister: {
+        marginTop: 50,
+        alignSelf: 'center',
+        width:300
     },
     picture: {
       flex: 1,
@@ -178,6 +221,11 @@ const styles = StyleSheet.create({
       height: null,
       resizeMode: 'cover',
     },
+    tform : {
+        marginTop: 20,
+        paddingRight: 50,
+        paddingLeft: 50,
+    }
 });
 
 const mapStateToProps = (state) => {

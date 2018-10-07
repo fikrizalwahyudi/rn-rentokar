@@ -61,14 +61,30 @@ class Profile extends Component {
       });
     }
   };
+
+  switchToVendor = async() =>{
+    try {
+      // await firebase.auth().signOut();
+      // GoogleSignin.signOut();
+      // this.setState({ userInfo: null, error: null });
+      await this.props.navigation.navigate('Vendor');
+    } catch (error) {
+      this.setState({
+        error,
+      });
+    }
+  }
   
   render() {
     return (
       <Container >
         <Content>
-          <Grid style={{backgroundColor:'#de1587',height:220}}>
+          <Grid style={{backgroundColor:'#d32f2f',height:220}}>
             <Row style={{marginTop:10}}>
               <Col size={15}>
+                <TouchableOpacity onPress={this.switchToVendor}>
+                  <Icon name="swap" size={20} style={{ color:'white', alignSelf:'center'}} />
+                </TouchableOpacity>
               </Col>
               <Col size={70}>
                 <TouchableOpacity onPress={this.pickImageHandler} >
@@ -102,13 +118,13 @@ class MyTabs extends Component {
     return(
       // <Container>
         <Tabs locked={false} style={{marginTop:-200}}>
-          <Tab heading="Profile" tabStyle={{backgroundColor: '#de1587'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#de1587'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
+          <Tab heading="Profile" tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
             <TabProfile />
           </Tab>
-          <Tab heading="Info Bank" tabStyle={{backgroundColor: '#de1587'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#de1587'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
+          <Tab heading="Info Bank" tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
             <TabBank />
           </Tab>
-          <Tab heading="Settings" tabStyle={{backgroundColor: '#de1587'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#de1587'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
+          <Tab heading="Settings" tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
             <TabSettings />
           </Tab>
         </Tabs>
@@ -270,9 +286,14 @@ const storeReference = (downloadUrl, sessionId) => {
 }
 
 
-const mapStateToProps = (state) => {
-  const { users } = state
-  return { users }
+
+const mapStateToProps = (state, props) => {
+  // console.log("tessss", state);
+  return {
+      state, props
+  } 
 };
 
 export default connect(mapStateToProps)(Profile);
+
+

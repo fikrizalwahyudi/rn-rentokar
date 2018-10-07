@@ -23,6 +23,8 @@ import Category from './components/Explore/Category';
 import Home from './components/Explore/Home';
 import Tag from './components/Explore/Tag';
 
+import {StackActions, NavigationActions} from 'react-navigation';
+
 import * as categoryService from '../../services/DataServices';
 
 import { connect } from 'react-redux';
@@ -30,7 +32,10 @@ import { connect } from 'react-redux';
 const { height, width } = Dimensions.get('window')
 
 
-export default class Explore extends React.Component {
+
+
+class Explore extends React.Component {
+    
 
     constructor(props) {
         super(props);
@@ -42,7 +47,7 @@ export default class Explore extends React.Component {
 
       }
     
-    componentDidMount() {
+    async componentDidMount() {
         this.listenForCategory();
     }
 
@@ -67,14 +72,28 @@ export default class Explore extends React.Component {
         });
     }
 
-    goToProductDetail() {
-        this.props.navigation.navigate('ProductDetail');
+    
+    goToProductDetail = () => {
+        const resetAction = StackActions.reset({
+            index: 1,
+            actions: [
+              NavigationActions.navigate({
+                routeName: 'Tabs'
+              }),
+              NavigationActions.navigate({
+                routeName: 'ProductDetail'
+              })
+            ],
+            key: null
+        });
+        
+        this.props.navigation.dispatch(resetAction);
     }
 
     render() {
         return (
             <Container>
-                <Header style={{ backgroundColor: '#de1587' }} searchBar rounded androidStatusBarColor="#de1587" >
+                <Header style={{ backgroundColor: '#d32f2f' }} searchBar rounded androidStatusBarColor="#d32f2f" >
                     <Item>
                         <Icon name="ios-search" />
                         <Input placeholder="Search" />
@@ -148,7 +167,7 @@ export default class Explore extends React.Component {
                                 rating={4}
                             />
                             </ TouchableOpacity  > 
-                            <Home width={width}
+                            {/* <Home width={width}
                                 name="The Cozy Place"
                                 type="PRIVATE ROOM - 2 BEDS"
                                 price={82}
@@ -171,7 +190,7 @@ export default class Explore extends React.Component {
                                 type="PRIVATE ROOM - 2 BEDS"
                                 price={82}
                                 rating={4}
-                            />
+                            /> */}
                             
 
                         </View>
@@ -194,12 +213,12 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     // console.log("tessss", state);
     return {
-        state
+        state, props
     } 
 };
 
-// export default connect(mapStateToProps)(Explore);
+export default connect(mapStateToProps)(Explore);
 

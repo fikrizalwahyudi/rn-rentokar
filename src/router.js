@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   ActivityIndicator,
   AsyncStorage,
@@ -7,7 +7,8 @@ import {
   StyleSheet,
   View,
   Platform,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native';
 import { TabNavigator, StackNavigator, createBottomTabNavigator , createStackNavigator, createSwitchNavigator} from 'react-navigation';
 import { Icon } from 'native-base';
@@ -15,6 +16,10 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 
 import { GoogleSignin} from 'react-native-google-signin';
 import firebase from 'react-native-firebase'
+
+import * as dataServices from '../src/services/DataServices';
+
+import { addUser, signUpWithGoogle } from '../src/actions/UserAction';
 
 // import Feed from '../screens/Feed';
 // import Settings from '../screens/Settings';
@@ -31,55 +36,181 @@ import Verification from './screens/Verification';
 import ConfirmationCode from './screens/ConfirmationCode';
 import Intro from './screens/Intro';
 
-export const Tabs = createMaterialBottomTabNavigator({
-  Explore: {
-    screen: Explore,
-    navigationOptions: {
-      tabBarLabel: 'Explore',
-      tabBarIcon: ({ tintColor }) => <Icon name="search" size={35} style={{color:tintColor}}  />,
-    },
-  },
-  Inquiry: {
-    screen: Inquiry,
-    navigationOptions: {
-      tabBarLabel: 'Transaksi',
-      tabBarIcon: ({ tintColor }) => <Icon name="apps" size={35} style={{color:tintColor}} />,
-    },
-  },
-  Activity: {
-    screen: Activity,
-    navigationOptions: {
-      tabBarLabel: 'Activity',
-      tabBarIcon: ({ tintColor }) => <Icon name="notifications" size={35} style={{color:tintColor}} />,
-    },
+// export const Tabs = createMaterialBottomTabNavigator({
+//   Explore: {
+//     screen:  createStackNavigator({
+//       Explore: {
+//         screen: Explore
+//       },
+//       ProductDetail: {
+//         screen: ProductDetail
+//       }
+//     },{
+//       headerMode: 'none',
+//       initialRouteName: 'Explore'
+//     }),
+//     navigationOptions: {
+//       tabBarLabel: 'Explore',
+//       tabBarIcon: ({ tintColor }) => <Icon name="search" size={35} style={{color:tintColor}}  />,
+//     },
+//   },
+//   Inquiry: {
+//     screen: Inquiry,
+//     navigationOptions: {
+//       tabBarLabel: 'Transaksi',
+//       tabBarIcon: ({ tintColor }) => <Icon name="apps" size={35} style={{color:tintColor}} />,
+//     },
+//   },
+//   Activity: {
+//     screen: Activity,
+//     navigationOptions: {
+//       tabBarLabel: 'Activity',
+//       tabBarIcon: ({ tintColor }) => <Icon name="notifications" size={35} style={{color:tintColor}} />,
+//     },
 
-  },
-  Profile: {
-    screen: Profile,
-    navigationOptions: {
-      tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => <Icon name="contact" size={35} style={{color:tintColor}} />,
-    },
-  },
-},{
-  initialRouteName: 'Explore',
-  activeTintColor: '#fff',
-  inactiveTintColor: '#fff',
-  barStyle: { backgroundColor: '#de1587' },
-  labeled: true,
-  shifting: true
-});
+//   },
+//   Profile: {
+//     screen: Profile,
+//     navigationOptions: {
+//       tabBarLabel: 'Profile',
+//       tabBarIcon: ({ tintColor }) => <Icon name="contact" size={35} style={{color:tintColor}} />,
+//     },
+//   },
+// },{
+//   initialRouteName: 'Explore',
+//   activeTintColor: '#fff',
+//   inactiveTintColor: '#fff',
+//   barStyle: { backgroundColor: '#d32f2f' },
+//   labeled: true,
+//   shifting: true
+// });
+
 
 export const TabStack = createStackNavigator({
-  Explore: {
-    screen: Explore
+  Tabs: {
+    screen: createMaterialBottomTabNavigator({
+      Explore: {
+        screen:  Explore,
+        navigationOptions: {
+          tabBarLabel: 'Explore',
+          tabBarIcon: ({ tintColor }) => <Icon name="search" size={35} style={{color:tintColor}}  />,
+        },
+      },
+      Inquiry: {
+        screen: Inquiry,
+        navigationOptions: {
+          tabBarLabel: 'Transaksi',
+          tabBarIcon: ({ tintColor }) => <Icon name="apps" size={35} style={{color:tintColor}} />,
+        },
+      },
+      Activity: {
+        screen: Activity,
+        navigationOptions: {
+          tabBarLabel: 'Activity',
+          tabBarIcon: ({ tintColor }) => <Icon name="notifications" size={35} style={{color:tintColor}} />,
+        },
+    
+      },
+      Profile: {
+        screen: Profile,
+        navigationOptions: {
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ tintColor }) => <Icon name="contact" size={35} style={{color:tintColor}} />,
+        },
+      },
+    },{
+      initialRouteName: 'Explore',
+      activeTintColor: '#fff',
+      inactiveTintColor: '#fff',
+      barStyle: { backgroundColor: '#d32f2f' },
+      labeled: true,
+      shifting: true
+    }),
+    navigationOptions: ({navigation}) => ({
+      header: null,
+    }), 
   },
   ProductDetail: {
-    screen: ProductDetail
+    screen: ProductDetail,
+    navigationOptions: () => ({
+      title: `Product Detail`,
+      headerMode: 'screen',
+      headerStyle: {
+        backgroundColor:"#d32f2f"
+      },
+      headerTitleStyle: {
+        color: "white"
+      },
+      headerTintColor: "white"
+    })
   }
+},{
+  initialRouteName: 'Tabs'
 })
 
-export const LoginStack = createStackNavigator({
+export const VendorTabStack = createStackNavigator({
+  Tabs: {
+    screen: createMaterialBottomTabNavigator({
+      Explore: {
+        screen:  Explore,
+        navigationOptions: {
+          tabBarLabel: 'Explore',
+          tabBarIcon: ({ tintColor }) => <Icon name="search" size={35} style={{color:tintColor}}  />,
+        },
+      },
+      Inquiry: {
+        screen: Inquiry,
+        navigationOptions: {
+          tabBarLabel: 'Transaksi',
+          tabBarIcon: ({ tintColor }) => <Icon name="apps" size={35} style={{color:tintColor}} />,
+        },
+      },
+      Activity: {
+        screen: Activity,
+        navigationOptions: {
+          tabBarLabel: 'Activity',
+          tabBarIcon: ({ tintColor }) => <Icon name="notifications" size={35} style={{color:tintColor}} />,
+        },
+    
+      },
+      Profile: {
+        screen: Profile,
+        navigationOptions: {
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ tintColor }) => <Icon name="contact" size={35} style={{color:tintColor}} />,
+        },
+      },
+    },{
+      initialRouteName: 'Activity',
+      activeTintColor: '#fff',
+      inactiveTintColor: '#fff',
+      barStyle: { backgroundColor: 'blue' },
+      labeled: true,
+      shifting: true
+    }),
+    navigationOptions: ({navigation}) => ({
+      header: null,
+    }), 
+  },
+  ProductDetail: {
+    screen: ProductDetail,
+    navigationOptions: () => ({
+      title: `Product Detail`,
+      headerMode: 'screen',
+      headerStyle: {
+        backgroundColor:"blue"
+      },
+      headerTitleStyle: {
+        color: "white"
+      },
+      headerTintColor: "white"
+    })
+  }
+},{
+  initialRouteName: 'Tabs'
+})
+
+const LoginStack = createStackNavigator({
   Login: {
     screen: Login
   },
@@ -112,10 +243,17 @@ class AuthLoadingScreen extends React.Component {
       // const users = await GoogleSignin.signInSilently();
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
+          user.id = user.uid;
+          // console.log(user.uid);
           // console.log(user.providerData);
           // var u = firebase.auth().currentUser;
-          // console.log(u)
-          self.props.navigation.navigate('App');
+          // console.log(user.email)
+          // signUpWithGoogle(user);
+          
+          dataServices.checkUser(user).then((res)=>{
+            self.props.navigation.navigate(res);
+          })
+          // self.props.navigation.navigate('App');
         } else {
           self.props.navigation.navigate('Auth');
         }
@@ -150,6 +288,27 @@ const styles = StyleSheet.create({
   },
 });
 
+class TabsContainer extends Component {
+  constructor(props)  {
+    super(props);
+  }
+  render() {
+    return <Tabs screenProps={{ rootNavigation: this.props.navigation }}  />;
+  }
+}
+
+// const FirstStack = createStackNavigator({
+//   ProductDetail: {
+//     screen: ProductDetail
+//   },
+//   Inside: {
+//     screen: TabsContainer
+//   }
+// },{
+//   headerMode: 'none',
+//   initialRouteName: 'Inside'
+// });
+
 
 // const AppStack = createStackNavigator({ Home: HomeScreen, Other: OtherScreen });
 // const AuthStack = createStackNavigator({ SignIn: SignInScreen });
@@ -157,8 +316,9 @@ const styles = StyleSheet.create({
 export default createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
-    App: Tabs,
+    App: TabStack,
     Auth: LoginStack,
+    Vendor: VendorTabStack
   },
   {
     initialRouteName: 'AuthLoading',

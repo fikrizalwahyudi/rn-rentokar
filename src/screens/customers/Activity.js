@@ -14,8 +14,8 @@ class Activity extends Component {
   render() {
     return (
       <Container >
-        <Header hasTabs style={{paddingTop:15, backgroundColor:'#de1587'}} 
-          androidStatusBarColor="#de1587">
+        <Header hasTabs style={{paddingTop:15, backgroundColor:'#d32f2f'}} 
+          androidStatusBarColor="#d32f2f">
           <Title>
             Activity
           </Title>
@@ -32,10 +32,10 @@ class MyTabs extends Component {
       // <Container>
         
         <Tabs locked={false}  >
-          <Tab heading="Message" tabStyle={{backgroundColor: '#de1587'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#de1587'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
+          <Tab heading="Message" tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
             <TabOne />
           </Tab>
-          <Tab heading="Notification"  tabStyle={{backgroundColor: '#de1587'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#de1587'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
+          <Tab heading="Notification"  tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
             <TabTwo />
           </Tab>
         </Tabs>
