@@ -25,31 +25,17 @@ export const createCategory = (data) =>{
 } 
 
 export const checkUser = (data)=>{
-        
     const promise = new Promise(function(resolve, reject){
         firebase.database().ref('users/'+data.id).once('value').then(function(snapshot){
-            console.log(snapshot.val());
+            // console.log(snapshot.val());
             if(snapshot.exists()){
-                console.log("masuuuuk", snapshot.val().email);
-                if(snapshot.val().phoneVerification){
-                    resolve("App")
-                }else{
-                    resolve("Verification")
-                }
+                // console.log("masuuuuk", snapshot.val().email);
+                // if(snapshot.val().phoneVerification){
+                //     resolve("App")
+                // }
+                return resolve(snapshot.val());
             }else{
-                // console.log("ga masuk", snapshot)
-                userRef.child(data.id).set({
-                    email:data.email,
-                    id:data.id,
-                    fullName:data.displayName,
-                    photoURL:data.photoURL,
-                    provider:data.providerId,
-                    phoneNumber:"",
-                    phoneVerification:false
-                }).then(e=>{
-                    resolve("Verification");
-                })
-                
+                return reject(false);
             }
         });
         // userRef.orderByChild('id').equalTo(data.id).once('value').then(function(snapshot){
@@ -82,7 +68,7 @@ export const updatePhoneVerification = (id) =>{
     const promise = new Promise(function(resolve, reject){
         console.log("object ", id);
         firebase.database().ref('users/'+id).update({
-            // phoneNumber:obj.phoneNumber,
+            phoneNumber:obj.phoneNumber,
             phoneVerification:true
         }).then(r=>{
             resolve("App");
@@ -93,4 +79,65 @@ export const updatePhoneVerification = (id) =>{
 
 export const generateCode = () =>{
     return Math.floor(Math.random()*90000) + 10000;
+}
+
+export const createUsers = (data) =>{
+    const promise = new Promise(function(resolve, reject){
+        var millisecond = Date.now();
+        userRef.child(data.id).set({
+            email:data.email,
+            id:data.id,
+            fullName:data.fullName,
+            photoURL:data.photoURL,
+            provider:data.providerId,
+            phoneNumber:"",
+            emailVerfirication: false,
+            phoneVerification:false,
+            createDate:millisecond
+        }).then(e=>{
+            firebase.database().ref('users/'+data.id).once('value').then((snap)=>{
+                // console.log("ini obj users ",snap.val());
+                // console.log("ini obj users ",snap.val().id);
+                return resolve(snap.val());
+            });
+        }).catch((e)=>{
+            return reject(false);
+        })
+    })
+    return promise;
+    
+}
+
+
+export const registerWithEmailPassword = (obj) =>{
+    const promise = new Promise(function(resolve, reject){
+        firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(obj.email, obj.password).then(function(e){
+            // console.log("success");
+            // console.log("ini console", e.user._auth._user.uid);
+            return resolve(e.user._auth._user);
+        }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // console.log(error);
+            return reject(error);
+            // ...
+        });
+    })
+    return promise;
+}
+
+export const updateProfile = (obj, uid) =>{
+    const promise = new Promise(function(resolve, reject){
+        firebase.database().ref('users/'+uid).update(obj).then((data)=>{
+            return resolve(data);
+        }).catch((error)=>{
+            return reject(error);
+        })
+    })
+    return promise;
+}
+
+export const getCurrentUser = () =>{
+    return currentUser = firebase.auth().currentUser;
 }

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Alert, Platform, Dimensions,ImageBackground } from 'react-native';
+import { View, StyleSheet, Image, Alert, Platform, Dimensions,ImageBackground, ActivityIndicator } from 'react-native';
 import { Container,  Content, Form, Item, Input, Label, Button, Text} from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import Loader from './utils/Loader';
 import t from 'tcomb-form-native';
 
 import * as _ from 'lodash';
@@ -11,9 +12,26 @@ import firebase from 'react-native-firebase';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addUser, signUpWithGoogle } from '../actions/UserAction';
+import { addUser, signIn } from '../actions/UserAction';
 
 import * as dataServices from '../services/DataServices';
+
+const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
+
+stylesheet.textbox.normal.borderWidth = 0;
+stylesheet.textbox.error.borderWidth = 0;
+stylesheet.textbox.normal.marginBottom = 0;
+stylesheet.textbox.error.marginBottom = 0;
+
+stylesheet.textboxView.normal.borderWidth = 0;
+stylesheet.textboxView.error.borderWidth = 0;
+stylesheet.textboxView.normal.borderRadius = 0;
+stylesheet.textboxView.error.borderRadius = 0;
+stylesheet.textboxView.normal.borderBottomWidth = 1;
+stylesheet.textboxView.error.borderBottomWidth = 1;
+stylesheet.textboxView.normal.marginBottom = 5;
+stylesheet.textboxView.error.marginBottom = 5;
+
 
 const TForm = t.form.Form;
 
@@ -23,6 +41,8 @@ const FormUser = t.struct({
 });
 
 const options = {
+    stylesheet: stylesheet,
+    auto: 'placeholders',
     fields: {
       password: {
         password: true,
@@ -36,13 +56,22 @@ class Login extends Component {
         super(props);
         this.state = {
             userInfo: null,
-            error: null
+            error: null,
+            isLoading: false
         };
     }
     
     
     async componentDidMount() {
         
+    }
+
+    showLoader = () => {
+        this.setState({ isLoading: true });
+    };
+
+    hideLoader = () =>{
+        this.setState({ isLoading: false });
     }
     
     // onLoginOrRegister = () => {
@@ -67,17 +96,19 @@ class Login extends Component {
     // }
     
     
-    _signIn = async () => {
+    _signInWithGoogleAccount = async () => {
         try {
             await GoogleSignin.hasPlayServices();
-            await GoogleSignin.signIn()
-            .then((data) => {
+            await GoogleSignin.signIn().then((data) => {
+                this.showLoader();
                 // Create a new Firebase credential with the token
                 const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
                 // Login with the credential
                 return firebase.auth().signInAndRetrieveDataWithCredential(credential);
             }).then((user)=>{
-                console.log(user.user.providerData);
+                console.log("userrr", user);
+                this.hideLoader();
+                // console.log(user.user.providerData[0].providerId);
                 
                 // user.providerData.forEach(function (profile) {
                 //     console.log("Sign-in provider: " + profile.providerId);
@@ -89,36 +120,46 @@ class Login extends Component {
                 var profile = {
                     email:user.user.email,
                     id:user.user.uid,
-                    fullName:user.user.displayName,
+                    fullName:user.user.providerData[0].displayName,
                     photoURL:user.user.photoURL,
-                    providerId:"default"
+                    providerId:user.user.providerData[0].providerId
                 }
-                if(user.user.providerData.providerId){
-                    profile.providerId = user.user.providerData.providerId
+                if(user.user.providerData[0].providerId == "google.com"){
+                    profile.providerId = user.user.providerData[0].providerId
                 }
                 // const array = _.values(profile);
                 // console.log(array);
-                this.props.signUpWithGoogle(profile);
+                // this.props.signUpWithGoogle(profile);
                 // console.log(profile);
+
                 dataServices.checkUser(profile).then((res)=>{
-                    this.props.navigation.navigate(res);
+                    console.log("ada");
+                }).catch((e)=>{
+                    console.log("ga ada", e);
+                    dataServices.createUsers(profile).then((e)=>{
+                        this.props.navigation.navigate('Verification');
+                        // console.log("success create user", e);
+                    }).catch((e)=>{
+                        // console.log("failed to create users");
+                    });
                 })
             })
         } catch (error) {
-            
+            console.log(error);
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 // sign in was cancelled
-                alert('cancelled');
+                // console.log('cancelled');
             } else if (error.code === statusCodes.IN_PROGRESS) {
                 // operation in progress already
-                alert('in progress');
+                // console.log('in progress');
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                alert('play services not available or outdated');
+                // console.log('play services not available or outdated');
             } else {
-                Alert.alert('Something went wrong', error.toString());
-                this.setState({
-                    error,
-                });
+                // console.log("error");
+                // Alert.alert('Something went wrong', error.toString());
+                // this.setState({
+                //     error,
+                // });
             }
         }
     };
@@ -128,6 +169,10 @@ class Login extends Component {
         this.props.navigation.navigate('Verification');
         // var a = this.g
     }
+
+    _register = () =>{
+        this.props.navigation.navigate('Register');
+    }
   
   render() {
     const {height: screenHeight} = Dimensions.get('window');
@@ -136,9 +181,10 @@ class Login extends Component {
     // const { navigate } = this.props.navigation;
 
     return (
-      
         <Container >
-          <Content >
+            <Loader loading={this.state.isLoading} />
+            <Content >
+            <ActivityIndicator size="small" color="#00ff00" />
                 <Grid>
                     <Col style={styles.grid}>
                         <Image style={styles.logo} source={require('../assets/img/rentokar-full-color.png')}/>
@@ -162,7 +208,7 @@ class Login extends Component {
                         <Button style={styles.buttonSubmit} block onPress={this._onSubmit}>
                             <Text  >Login </Text>
                         </Button>
-                        <Button style={styles.buttonRegister} block onPress={this._onSubmit}>
+                        <Button style={styles.buttonRegister} block onPress={this._register}>
                             <Text  >Register </Text>
                         </Button>
                         <View style={{flex:1,justifyContent:'center', alignItems:'center', marginTop:10}}>
@@ -172,7 +218,7 @@ class Login extends Component {
                             style={{ width: 300, alignSelf:'center', height: 48, marginTop:10 }}
                             size={GoogleSigninButton.Size.Wide}
                             color={GoogleSigninButton.Color.Dark}
-                            onPress={this._signIn}/>
+                            onPress={this._signInWithGoogleAccount}/>
                     </Col>
                 </Grid>
             </Content>
@@ -223,8 +269,9 @@ const styles = StyleSheet.create({
     },
     tform : {
         marginTop: 20,
-        paddingRight: 50,
-        paddingLeft: 50,
+        width:300,
+        alignSelf: 'center',
+        justifyContent: 'center',
     }
 });
 
@@ -235,8 +282,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-      addUser,signUpWithGoogle
+      addUser,signIn
     }, dispatch)
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

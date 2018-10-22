@@ -18,16 +18,19 @@ import {
 import {Header,Button, Container, Content, Item, Input, Icon, Left, Right, Body} from 'native-base';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
 
+import Loader from '../utils/Loader';
+
 // import Icon from 'react-native-vector-icons/Ionicons'
 import Category from './components/Explore/Category';
 import Home from './components/Explore/Home';
 import Tag from './components/Explore/Tag';
 
+
 import {StackActions, NavigationActions} from 'react-navigation';
-
 import * as categoryService from '../../services/DataServices';
-
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addUser, signIn } from '../../actions/UserAction';
 
 const { height, width } = Dimensions.get('window')
 
@@ -42,18 +45,43 @@ class Explore extends React.Component {
         this.state = {
             listCategory: [],
             userInfo: null,
-            error: null
+            error: null,
+            isLoading: false
         };
+         
 
       }
     
     async componentDidMount() {
-        this.listenForCategory();
+        var self = this;
+        await this.listenForCategory();
+        console.log("params", this.props.navigation.state.params);
+        if(this.props.navigation.state.params != undefined){
+            this.props.signIn(this.props.navigation.state.params);
+        }
+        
+        // setTimeout(function(){
+        //     self.hideLoader();
+        // },3000)
+        
+        // console.log("data redux", this.props.state.users);
+        // if(this.props.navigation.state.params){
+        //     this.props.signUpWithGoogle(profile);
+        // }
+        
     }
 
 
     componentWillMount() {
        
+    }
+
+    showLoader = () => {
+        this.setState({ isLoading: true });
+    };
+
+    hideLoader = () =>{
+        this.setState({ isLoading: false });
     }
 
     listenForCategory() {
@@ -93,6 +121,7 @@ class Explore extends React.Component {
     render() {
         return (
             <Container>
+                <Loader loading={this.state.isLoading} />
                 <Header style={{ backgroundColor: '#d32f2f' }} searchBar rounded androidStatusBarColor="#d32f2f" >
                     <Item>
                         <Icon name="ios-search" />
@@ -138,7 +167,7 @@ class Explore extends React.Component {
                         <View style={{ marginTop: 40, paddingHorizontal: 20 }}>
                             <Text style={{ fontSize: 24, fontWeight: '700' }}>
                                 Introducing Rentokar 
-                                {/* {this.props.state.users.email}  */}
+                                {/* {JSON.stringify(this.props.state.users)}  */}
                             </Text>
                             <Text style={{ fontWeight: '100', marginTop: 10 }}>
                                 A new selection of homes verified for quality & comfort
@@ -214,11 +243,26 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, props) => {
+    console.log(state);
+    console.log(props);
     // console.log("tessss", state);
     return {
         state, props
     } 
 };
 
-export default connect(mapStateToProps)(Explore);
+// export default connect(mapStateToProps)(Explore);
+
+// const mapStateToProps = (state) => {
+//     const { users } = state
+//     return { users }
+// };
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+      addUser,signIn
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Explore);
 

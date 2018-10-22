@@ -19,8 +19,6 @@ import firebase from 'react-native-firebase'
 
 import * as dataServices from '../src/services/DataServices';
 
-import { addUser, signUpWithGoogle } from '../src/actions/UserAction';
-
 // import Feed from '../screens/Feed';
 // import Settings from '../screens/Settings';
 // import UserDetail from '../screens/UserDetail';
@@ -31,10 +29,18 @@ import Inquiry from './screens/customers/Inquiry';
 import Profile from './screens/customers/Profile';
 import ProductDetail from './screens/customers/ProductDetail';
 
+import VendorActivity from './screens/vendor/VendorActivity';
+import Product from './screens/vendor/Product';
+import Transaction from './screens/vendor/Transaction';
+import AddProduct from './screens/vendor/AddProduct';
+
 import Login from './screens/Login';
 import Verification from './screens/Verification';
 import ConfirmationCode from './screens/ConfirmationCode';
 import Intro from './screens/Intro';
+import Register from './screens/Register';
+
+
 
 // export const Tabs = createMaterialBottomTabNavigator({
 //   Explore: {
@@ -151,24 +157,24 @@ export const TabStack = createStackNavigator({
 export const VendorTabStack = createStackNavigator({
   Tabs: {
     screen: createMaterialBottomTabNavigator({
-      Explore: {
-        screen:  Explore,
+      Product: {
+        screen:  Product,
         navigationOptions: {
-          tabBarLabel: 'Explore',
-          tabBarIcon: ({ tintColor }) => <Icon name="search" size={35} style={{color:tintColor}}  />,
+          tabBarLabel: 'Product',
+          tabBarIcon: ({ tintColor }) => <Icon name="cube" size={35} style={{color:tintColor}}  />,
         },
       },
-      Inquiry: {
-        screen: Inquiry,
+      Transaction: {
+        screen: Transaction,
         navigationOptions: {
-          tabBarLabel: 'Transaksi',
+          tabBarLabel: 'Transaction',
           tabBarIcon: ({ tintColor }) => <Icon name="apps" size={35} style={{color:tintColor}} />,
         },
       },
-      Activity: {
-        screen: Activity,
+      VendorActivity: {
+        screen: VendorActivity,
         navigationOptions: {
-          tabBarLabel: 'Activity',
+          tabBarLabel: 'VendorActivity',
           tabBarIcon: ({ tintColor }) => <Icon name="notifications" size={35} style={{color:tintColor}} />,
         },
     
@@ -181,10 +187,10 @@ export const VendorTabStack = createStackNavigator({
         },
       },
     },{
-      initialRouteName: 'Activity',
+      initialRouteName: 'Product',
       activeTintColor: '#fff',
       inactiveTintColor: '#fff',
-      barStyle: { backgroundColor: 'blue' },
+      barStyle: { backgroundColor: '#40c4ff' },
       labeled: true,
       shifting: true
     }),
@@ -196,6 +202,20 @@ export const VendorTabStack = createStackNavigator({
     screen: ProductDetail,
     navigationOptions: () => ({
       title: `Product Detail`,
+      headerMode: 'screen',
+      headerStyle: {
+        backgroundColor:"blue"
+      },
+      headerTitleStyle: {
+        color: "white"
+      },
+      headerTintColor: "white"
+    })
+  },
+  AddProduct: {
+    screen: AddProduct,
+    navigationOptions: () => ({
+      title: `Add Product`,
       headerMode: 'screen',
       headerStyle: {
         backgroundColor:"blue"
@@ -222,6 +242,9 @@ const LoginStack = createStackNavigator({
   },
   Intro: {
     screen: Intro
+  },
+  Register: {
+    screen: Register
   }
 },
 {
@@ -231,18 +254,26 @@ const LoginStack = createStackNavigator({
 
 
 class AuthLoadingScreen extends React.Component {
-  constructor() {
-    super();
-    setTimeout(()=>{this._getCurrentUser()}, 1000); 
+  constructor(props) {
+    super(props);
   }
+
+  componentWillMount() {
+    var self = this;
+    setTimeout(function(){ 
+      self._getCurrentUser();
+    }, 3000);
+}
 
   // Fetch the token from storage then navigate to our appropriate place
   async _getCurrentUser() {
+    var self = this;
     try {
-      var self = this;
       // const users = await GoogleSignin.signInSilently();
       firebase.auth().onAuthStateChanged(function(user) {
+        console.log("kepanggil", user);
         if (user) {
+          console.log("already logged in");
           user.id = user.uid;
           // console.log(user.uid);
           // console.log(user.providerData);
@@ -251,20 +282,39 @@ class AuthLoadingScreen extends React.Component {
           // signUpWithGoogle(user);
           
           dataServices.checkUser(user).then((res)=>{
-            self.props.navigation.navigate(res);
+            // this.props.signIn(res);
+            // console.log("masuk sini");
+            console.log("kepanggil lagi", res);
+            self.props.navigation.navigate("Explore", res);
+          }).catch((e)=>{
+            // console.log("gapunya user", user.providerData[0].providerId);
+            // if(user.providerData[0].providerId === 'google.com'){
+            //     try {
+            //       firebase.auth().signOut();
+            //       GoogleSignin.signOut();
+            //       self.props.navigation.navigate('Auth');
+            //     } catch (error) {
+            //       console.log(error);
+            //     }
+            // }else{
+            //   self.props.navigation.navigate("Auth");
+            // }
+           
+            self.props.navigation.navigate("Auth");
+            // console.log(e);
           })
           // self.props.navigation.navigate('App');
         } else {
           self.props.navigation.navigate('Auth');
         }
       });
-    
     } catch (error) {
-      alert(error)
-      this.setState({
-        error,
-      });
       this.props.navigation.navigate('Auth');
+      // alert(error)
+      // this.setState({
+      //   error,
+      // });
+      
     }
   }
   
@@ -308,10 +358,17 @@ class TabsContainer extends Component {
 //   headerMode: 'none',
 //   initialRouteName: 'Inside'
 // });
+// const mapStateToProps = (state) => {
+//   const { users } = state
+//   return { users }
+// };
+
+// const mapDispatchToProps = {
+//   ...messageActions,
+//   ...userActions,
+// };
 
 
-// const AppStack = createStackNavigator({ Home: HomeScreen, Other: OtherScreen });
-// const AuthStack = createStackNavigator({ SignIn: SignInScreen });
 
 export default createSwitchNavigator(
   {
@@ -324,3 +381,9 @@ export default createSwitchNavigator(
     initialRouteName: 'AuthLoading',
   }
 );
+
+// export default connect(mapStateToProps, mapDispatchToProps)(AuthLoadingScreen)(a);
+
+// const AppStack = createStackNavigator({ Home: HomeScreen, Other: OtherScreen });
+// const AuthStack = createStackNavigator({ SignIn: SignInScreen });
+

@@ -4,7 +4,7 @@ import {View, ScrollView} from 'react-native';
 import {Title, Textarea, Container, Content, List, ListItem, InputGroup, ScrollableTab, Tab, Tabs, Header,Icon, H3, H2, H1, Form, Item, Input, Label, Button, Text, Thumbnail, Left, Body, Right, Switch } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
-class Inquiry extends Component {
+class VendorActivity extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,10 +14,10 @@ class Inquiry extends Component {
   render() {
     return (
       <Container >
-        <Header hasTabs style={{paddingTop:15, backgroundColor:'#d32f2f'}} 
-          androidStatusBarColor="#d32f2f">
+        <Header hasTabs style={{paddingTop:15, backgroundColor:'#40c4ff'}} 
+          androidStatusBarColor="#40c4ff">
           <Title>
-            Transaksi
+            VendorActivity
           </Title>
         </Header>
         <MyTabs />
@@ -32,15 +32,15 @@ class MyTabs extends Component {
       // <Container>
         
         <Tabs locked={false} >
-          <Tab heading="Menunggu"  tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
+          <Tab heading="Message"  tabStyle={{backgroundColor: '#40c4ff'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#40c4ff'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
             <TabOne />
           </Tab>
-          <Tab heading="Masa Sewa"  tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
+          <Tab heading="Notifications"  tabStyle={{backgroundColor: '#40c4ff'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#40c4ff'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
             <TabTwo />
           </Tab>
-          <Tab heading="Riwayat"  tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
+          {/* <Tab heading="Riwayat"  tabStyle={{backgroundColor: '#40c4ff'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#40c4ff'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}} >
             <TabThree />
-          </Tab>
+          </Tab> */}
         </Tabs>
       // </Container>
     )
@@ -260,4 +260,4 @@ class TabThree extends Component {
   }
 } 
 
-export default Inquiry;
+export default VendorActivity;

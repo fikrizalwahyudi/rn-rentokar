@@ -5,12 +5,17 @@ export const addUser = data => (
     }
 );
 
-export const signUpWithGoogle = data => (
-    {
-        type: 'SIGNUP_GOOGLE',
-        payload: data
-    }
-);
+// export const signUpWithGoogle = data => (
+//     {
+//         type: 'SIGNUP_GOOGLE',
+//         payload: data
+//     }
+// );
+
+export const switchToVendor = data => ({
+    type: 'SWITCH_TO_VENDOR',
+    payload: data
+})
 
 export const signIn = data => (
     {

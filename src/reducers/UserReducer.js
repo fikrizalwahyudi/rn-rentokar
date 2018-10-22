@@ -5,9 +5,10 @@ const USER_INFO = {
   fullName:'',
   email:'',
   phoneNumber:'',
-  verified:false,
-  lastState:'',
-  photoURL:''
+  phoneVerification:false,
+  emailVerification:false,
+  photoURL:'',
+  isVendor:false
 }
 
 const userReducer = (state = USER_INFO, action) => {
@@ -16,12 +17,24 @@ const userReducer = (state = USER_INFO, action) => {
     case 'ADD_USER':
       state = action.payload;
       return state
-    case 'SIGNUP_GOOGLE':
+    case 'SIGNIN':
       state.id = action.payload.id,
       state.fullName = action.payload.fullName,
       state.email = action.payload.email,
-      state.profilePicture = action.payload.profilePicture
+      state.phoneNumber = action.payload.phoneNumber,
+      state.emailVerification = action.payload.phoneVerification,
+      state.photoURL = action.payload.photoURL
       return state
+    case 'SWITCH_TO_VENDOR':
+      state.isVendor = action.payload.isVendor
+      return state
+
+    // case 'SIGNUP_GOOGLE':
+    //   state.id = action.payload.id,
+    //   state.fullName = action.payload.fullName,
+    //   state.email = action.payload.email,
+    //   state.profilePicture = action.payload.profilePicture
+    //   return state
     default:
       return state
   }

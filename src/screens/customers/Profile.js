@@ -11,6 +11,10 @@ import ImagePicker  from 'react-native-image-crop-picker';
 // import RNFetchBlob from 'rn-fetch-blob'
 
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addUser, signIn, switchToVendor } from '../../actions/UserAction';
+
+import * as dataServices from '../../services/DataServices';
 
 
 // const Blob = RNFetchBlob.polyfill.Blob;
@@ -18,11 +22,18 @@ import { connect } from 'react-redux';
 // window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 // window.Blob = Blob;
 
+// const dataProfile = {}
+
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isVendor:false
     };
+
+    
+    // this.dataProfile = this.props.state.users;
+    // console.log("data profile ", this.dataProfile);
   }
   
   pickImageHandler = () => {
@@ -62,33 +73,60 @@ class Profile extends Component {
     }
   };
 
-  switchToVendor = async() =>{
-    try {
-      // await firebase.auth().signOut();
-      // GoogleSignin.signOut();
-      // this.setState({ userInfo: null, error: null });
-      await this.props.navigation.navigate('Vendor');
-    } catch (error) {
-      this.setState({
-        error,
-      });
+  switchMode = async() =>{
+    if(!this.props.state.users.isVendor){
+      this.props.switchToVendor({isVendor:true});
+      bgColor = '#40c4ff';
+      this.props.navigation.navigate('Vendor');
+    }else{
+      this.props.switchToVendor({isVendor:false});
+      bgColor = '#d32f2f';
+      this.props.navigation.navigate('App');
     }
+    // try {
+    //   // await firebase.auth().signOut();
+    //   // GoogleSignin.signOut();
+    //   // this.setState({ userInfo: null, error: null });
+      
+    // } catch (error) {
+    //   this.setState({
+    //     error,
+    //   });
+    // }
   }
+
+  // switchCustomer = async() =>{
+  //   try {
+  //     // await firebase.auth().signOut();
+  //     // GoogleSignin.signOut();
+  //     // this.setState({ userInfo: null, error: null });
+  //     this.props.switchToVendor({isVendor:false});
+  //     await this.props.navigation.navigate('App');
+  //   } catch (error) {
+  //     this.setState({
+  //       error,
+  //     });
+  //   }
+  // }
   
   render() {
+    let bgColor = "#d32f2f";
+    if(this.props.state.users.isVendor){
+      bgColor = '#40c4ff';
+    }
     return (
       <Container >
         <Content>
-          <Grid style={{backgroundColor:'#d32f2f',height:220}}>
+          <Grid style={{backgroundColor:bgColor,height:220}}>
             <Row style={{marginTop:10}}>
               <Col size={15}>
-                <TouchableOpacity onPress={this.switchToVendor}>
+                <TouchableOpacity onPress={this.switchMode}>
                   <Icon name="swap" size={20} style={{ color:'white', alignSelf:'center'}} />
                 </TouchableOpacity>
               </Col>
               <Col size={70}>
                 <TouchableOpacity onPress={this.pickImageHandler} >
-                  <Thumbnail source={require('../../assets/img/logo-black.png')} style={{borderColor:'white', borderRadius:100, borderWidth:5, marginTop:0,alignSelf:'center', width:120, height:120}}/>
+                  <Thumbnail source={{uri: this.props.state.users.photoURL}}  style={{borderColor:'white', borderRadius:100, borderWidth:5, marginTop:0,alignSelf:'center', width:120, height:120}}/>
                 </TouchableOpacity>
               </Col>
               <Col size={15}>
@@ -99,14 +137,14 @@ class Profile extends Component {
             </Row>
             <Row >
               <Col >
-                <H2 style={{marginTop:25,alignSelf:'center', color:'white'}}>Fikrizal</H2>      
+                <H2 style={{marginTop:25,alignSelf:'center', color:'white'}}>{this.props.state.users.fullName}</H2>      
               </Col>
             </Row>
           </Grid>
           
         </Content>
         
-        <MyTabs />
+        <MyTabs bgColor={bgColor}/>
         
       </Container>
     );
@@ -114,17 +152,23 @@ class Profile extends Component {
 }
 
 class MyTabs extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+    
+  }
   render() {
     return(
       // <Container>
         <Tabs locked={false} style={{marginTop:-200}}>
-          <Tab heading="Profile" tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
+          <Tab heading="Profile" tabStyle={{backgroundColor: this.props.bgColor}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: this.props.bgColor}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
             <TabProfile />
           </Tab>
-          <Tab heading="Info Bank" tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
+          <Tab heading="Info Bank" tabStyle={{backgroundColor: this.props.bgColor}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: this.props.bgColor}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
             <TabBank />
           </Tab>
-          <Tab heading="Settings" tabStyle={{backgroundColor: '#d32f2f'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#d32f2f'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
+          <Tab heading="Settings" tabStyle={{backgroundColor: this.props.bgColor}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: this.props.bgColor}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
             <TabSettings />
           </Tab>
         </Tabs>
@@ -134,16 +178,28 @@ class MyTabs extends Component {
 }
 
 class TabProfile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+    var current = dataServices.getCurrentUser();
+    console.log("current", current.uid);
+    dataServices.checkUser({id:current.uid}).then((res)=>{
+      this.setState(res);
+    }).catch((err)=>{
+      console.log(err);
+    })
+  }
   render() {
     return (
       <ScrollView style={{marginLeft:10}}>
         <Item stackedLabel>
           <Label>Full Name</Label>
-          <Input disabled value="Fikrizal Wahyudi"/>
+          <Input disabled value={this.state.fullName}/>
         </Item>
         <Item stackedLabel>
           <Label>Email</Label>
-          <Input disabled value="fikrizal@rentokar.com"/>
+          <Input disabled value={this.state.email}/>
         </Item>
         <Item stackedLabel>
           <Label>Phone Number</Label>
@@ -151,7 +207,7 @@ class TabProfile extends Component {
         </Item>
         <Item stackedLabel>
           <Label>Address</Label>
-          <Textarea disabled value="Bukit Pabuaran Indah Blok L3 No 19 Cibinong Jawa Barat"/>
+          <Textarea disabled value="Not Set"/>
         </Item>
       </ScrollView>
     )
@@ -159,6 +215,11 @@ class TabProfile extends Component {
 } 
 
 class TabBank extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+  }
   render() {
     return (
       <ScrollView style={{marginLeft:10}}>
@@ -180,6 +241,11 @@ class TabBank extends Component {
 } 
 
 class TabSettings extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+  }
   render() {
     return (
       <ScrollView >
@@ -282,18 +348,40 @@ const storeReference = (downloadUrl, sessionId) => {
       email: currentUser.email
     }
   }
-  firebase.database().ref('users').push(image);
+
+  var obj={
+    photoURL:downloadUrl
+  }
+
+  dataServices.updateProfile(obj, currentUser.uid).then((res)=>{
+    console.log("success ");
+    this.props.state.users.photoURL = downloadUrl;
+  }).catch((error)=>{
+    console.log(error);
+  })
+  // firebase.database().ref('users').push(image);
 }
 
 
 
 const mapStateToProps = (state, props) => {
-  // console.log("tessss", state);
   return {
       state, props
   } 
 };
 
-export default connect(mapStateToProps)(Profile);
+// export default connect(mapStateToProps)(Explore);
 
+// const mapStateToProps = (state) => {
+//     const { users } = state
+//     return { users }
+// };
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    addUser,signIn,switchToVendor
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 

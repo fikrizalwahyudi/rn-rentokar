@@ -48,7 +48,7 @@ class TabOne extends Component {
   render() {
     return (
       <ScrollView style={{marginLeft:10}}>
-        <Item stackedLabel>
+        {/* <Item stackedLabel>
           <Label>Full Name</Label>
           <Input disabled value="Fikrizal Wahyudi"/>
         </Item>
@@ -63,7 +63,7 @@ class TabOne extends Component {
         <Item stackedLabel>
           <Label>Address</Label>
           <Textarea disabled value="Bukit Pabuaran Indah Blok L3 No 19 Cibinong Jawa Barat"/>
-        </Item>
+        </Item> */}
       </ScrollView>
     )
   }
@@ -73,7 +73,7 @@ class TabTwo extends Component {
   render() {
     return (
       <ScrollView style={{marginLeft:10}}>
-        <Item stackedLabel>
+        {/* <Item stackedLabel>
           <Label>Bank</Label>
           <Input disabled value="BCA"/>
         </Item>
@@ -84,7 +84,7 @@ class TabTwo extends Component {
         <Item stackedLabel>
           <Label>Nomor Rekening</Label>
           <Input disabled value="8330055236"/>
-        </Item>
+        </Item> */}
       </ScrollView>
     )
   }
@@ -94,7 +94,7 @@ class TabThree extends Component {
   render() {
     return (
       <ScrollView >
-        <List >
+        {/* <List >
           <ListItem >
             <Left>
               <Text>Change Password</Text>
@@ -159,7 +159,7 @@ class TabThree extends Component {
               <Icon name="arrow-forward" />
             </Right>
           </ListItem>
-        </List>
+        </List> */}
       </ScrollView>
     )
   }
