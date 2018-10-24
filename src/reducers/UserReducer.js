@@ -1,5 +1,10 @@
 import { combineReducers } from 'redux';
 
+import { reducer as formReducer } from 'redux-form';
+
+
+
+
 const USER_INFO = {
   id:'',
   fullName:'',
@@ -10,6 +15,10 @@ const USER_INFO = {
   photoURL:'',
   isVendor:false
 }
+
+// const reducers = {
+//   form: formReducer
+// }
 
 const userReducer = (state = USER_INFO, action) => {
 
@@ -40,6 +49,10 @@ const userReducer = (state = USER_INFO, action) => {
   }
 };
 
-export default combineReducers({
+const reducers = {
+  form: formReducer,
   users: userReducer
-});
+}
+const allReducers= combineReducers(reducers);
+
+export default allReducers;

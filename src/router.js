@@ -218,7 +218,7 @@ export const VendorTabStack = createStackNavigator({
       title: `Add Product`,
       headerMode: 'screen',
       headerStyle: {
-        backgroundColor:"blue"
+        backgroundColor:"#40c4ff"
       },
       headerTitleStyle: {
         color: "white"

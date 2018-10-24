@@ -16,9 +16,9 @@ import Profile from './src/screens/customers/Profile';
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import UserReducer from './src/reducers/UserReducer';
+import allReducers from './src/reducers/UserReducer';
 
-const store = createStore(UserReducer);
+const store = createStore(allReducers);
 
 export default class App extends Component {
 

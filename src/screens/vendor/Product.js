@@ -24,7 +24,7 @@ class Product extends Component {
           </Title>
         </Header>
         <MyTabs />
-        <FAB buttonColor="red" iconTextColor="#FFFFFF" onClickAction={() => {console.log("FAB pressed")}} visible={true} iconTextComponent={<Icon name="add"/>} />
+        <FAB buttonColor="red" iconTextColor="#FFFFFF" onClickAction={() => {this.props.navigation.navigate("AddProduct")}} visible={true} iconTextComponent={<Icon name="add"/>} />
       </Container>
     );
   }

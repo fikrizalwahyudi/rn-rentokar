@@ -105,7 +105,7 @@ class Register extends Component {
                     email:value.email.toLowerCase(),
                     id:obj.uid,
                     fullName:value.fullName,
-                    photoURL:'https://firebase  storage.googleapis.com/v0/b/rentokar-58839.appspot.com/o/avatar_circle_blue_512dp.png?alt=media&token=aa864786-d125-4428-8a31-11d740093acc',
+                    photoURL:'https://firebasestorage.googleapis.com/v0/b/rentokar-58839.appspot.com/o/avatar_circle_blue_512dp.png?alt=media&token=aa864786-d125-4428-8a31-11d740093acc',
                     providerId:"firebase"
                 }
                 

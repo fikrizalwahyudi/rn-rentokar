@@ -136,13 +136,7 @@ class AddProduct extends Component {
         <Container>
             <Loader loading={this.state.isLoading} />
             <Toast ref="toast" position='bottom'/>
-            <Header>
-                <Left style={{flex: 1}}/>
-                <Body style={{flex: 1, alignItems:'center'}}>
-                    <Title>Add Product</Title>
-                </Body>
-                <Right style={{flex: 1}}/>
-            </Header>
+            
             <Content style={StyleSheet.content}>
                 <View >
                     <TForm ref="form" type={FormRegister} options={options} /> 
