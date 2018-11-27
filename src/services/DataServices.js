@@ -3,13 +3,38 @@ import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-goog
 import { Platform } from 'react-native';
 import firebase from 'react-native-firebase';
 
+import allReducers from '../reducers/Reducer';
+import { addUser, signIn } from '../actions/UserAction';
+import { createStore } from 'redux';
+
+import * as _ from 'lodash';
 
 const userRef = firebase.database().ref('users');
-
+const store = createStore(allReducers);
 //category
 export const getListCategory = () => {
     return firebase.database().ref('category');
 };
+
+export const getCategory = () =>{
+    const promise =new Promise(function(resolve, reject){
+        firebase.database().ref('category').orderByChild('categoryParent').equalTo('').on('value', (dataSnapshot) => {
+            var listCat = [];
+            dataSnapshot.forEach((child) => {
+                listCat.push({
+                    name: child.val().categoryName,
+                    _key: child.key
+                });
+            });
+            console.log(listCat);
+            resolve(listCat);
+        },err=>{
+            reject(err);
+        });
+    })
+
+    return promise;
+}
 
 export const createCategory = (data) =>{
     firebase.database().ref('category').push({
@@ -33,6 +58,7 @@ export const checkUser = (data)=>{
                 // if(snapshot.val().phoneVerification){
                 //     resolve("App")
                 // }
+                store.dispatch(signIn(snapshot.val()));
                 return resolve(snapshot.val());
             }else{
                 return reject(false);
@@ -139,5 +165,73 @@ export const updateProfile = (obj, uid) =>{
 }
 
 export const getCurrentUser = () =>{
+    // store.dispatch(signIn({fullName:"test"}))
+    
     return currentUser = firebase.auth().currentUser;
+}
+
+export const createProduct = (obj) =>{
+    obj.uid = store.getState().users.id;
+    console.log(obj);
+    const promise = new Promise(function(resolve, reject){
+        firebase.database().ref('products').push(obj).then(e=>{
+            console.log(e);
+            resolve(e);
+        }).catch(err=>{
+            reject(err);
+        });
+    }) 
+    return promise;
+}
+
+export const getProductById = (uid) =>{
+    const promise =new Promise(function(resolve, reject){
+        firebase.database().ref('products').orderByChild('uid').equalTo(uid).on('value', (dataSnapshot) => {
+            var listProduct = [];
+            dataSnapshot.forEach((child) => {
+                var obj = child.val();
+                obj._key = child.key;
+                listProduct.push(obj);
+            });
+            console.log(listProduct);
+            resolve(listProduct);
+        },err=>{
+            reject(err);
+        });
+    })
+
+    return promise;
+}
+
+export const getAllProduct = () =>{
+    const promise =new Promise(function(resolve, reject){
+        firebase.database().ref('products').on('value', (dataSnapshot) => {
+            var listProduct = [];
+            dataSnapshot.forEach((child) => {
+                var obj = child.val();
+                obj._key = child.key;
+                listProduct.push(obj);
+            });
+            console.log(listProduct);
+            resolve(listProduct);
+        },err=>{
+            reject(err);
+        });
+    })
+
+    return promise;
+}
+
+export const getProfileById = (uid) =>{
+    const promise = new Promise(function(resolve, reject){
+        firebase.database().ref('users/'+uid).once('value').then(function(snapshot){
+            // console.log(snapshot.val());
+            if(snapshot.exists()){
+                return resolve(snapshot.val());
+            }else{
+                return reject(false);
+            }
+        });
+    })
+    return promise;
 }

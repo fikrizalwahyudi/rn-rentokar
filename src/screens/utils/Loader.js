@@ -32,7 +32,7 @@ const Loader = props => {
       onRequestClose={() => {console.log('close modal')}}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
-            <DotIndicator color='black' size={10}/>
+            <DotIndicator color='#d32f2f' size={10}/>
         </View>
       </View>
     </Modal>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000040'
   },
   activityIndicatorWrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
     height: 100,
     width: 100,
     borderRadius: 10,

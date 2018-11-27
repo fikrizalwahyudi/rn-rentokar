@@ -107,6 +107,7 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true 
     }
     signingConfigs {
         debug {
@@ -167,12 +168,17 @@ dependencies {
     implementation(project(":react-native-google-signin")){
         exclude group: "com.google.android.gms" // very important
     }
+    implementation (project(':react-native-maps')){
+        exclude group: 'com.google.android.gms'
+    }
     implementation 'com.google.android.gms:play-services-auth:15.0.1' // should be at least 15.0.0 to work with the most recent APIs
     implementation "com.google.android.gms:play-services-base:15.0.1"
     implementation "com.google.firebase:firebase-core:16.0.1"
     implementation "com.google.firebase:firebase-database:16.0.1"
     implementation "com.google.firebase:firebase-auth:16.0.2"
     implementation "com.google.firebase:firebase-storage:16.0.1"
+    implementation "com.google.android.gms:play-services-maps:15.0.1"
+    implementation 'com.android.support:multidex:1.0.1'
 }
 
 // Run this once to be able to run the application with BUCK

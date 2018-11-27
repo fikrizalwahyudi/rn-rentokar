@@ -173,6 +173,7 @@ class Login extends Component {
     _register = () =>{
         this.props.navigation.navigate('Register');
     }
+
   
   render() {
     const {height: screenHeight} = Dimensions.get('window');
@@ -184,7 +185,7 @@ class Login extends Component {
         <Container >
             <Loader loading={this.state.isLoading} />
             <Content >
-            <ActivityIndicator size="small" color="#00ff00" />
+            {/* <ActivityIndicator size="small" color="#00ff00" /> */}
                 <Grid>
                     <Col style={styles.grid}>
                         <Image style={styles.logo} source={require('../assets/img/rentokar-full-color.png')}/>

@@ -144,7 +144,7 @@ class Profile extends Component {
           
         </Content>
         
-        <MyTabs bgColor={bgColor}/>
+        <MyTabs bgColor={bgColor} />
         
       </Container>
     );

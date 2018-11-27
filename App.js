@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
 import { StyleSheet,View,StatusBar,Platform } from 'react-native';
-import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, Badge } from 'native-base';
+import {Root, Container, Header, Content, Footer, FooterTab, Button, Icon, Text, Badge } from 'native-base';
 
 import { GoogleSignin} from 'react-native-google-signin';
 
 import Login from './src/screens/Login';
 import Verification from './src/screens/Verification';
 import ConfirmationCode from './src/screens/ConfirmationCode';
-import AuthLoadingScreen, { Root, Tabs } from './src/router';
+import AuthLoadingScreen, { Tabs } from './src/router';
 import Explore from './src/screens/customers/Explore';
 import Profile from './src/screens/customers/Profile';
+import ProductForm from './src/screens/vendor/components/ProductForm';
+import Maps from './src/screens/utils/Maps';
 // import Intro from './src/screens/Intro';
 // import {AuthLoadingScreen} from './src/'
 
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import allReducers from './src/reducers/UserReducer';
+import allReducers from './src/reducers/Reducer';
 
 const store = createStore(allReducers);
 
@@ -49,9 +51,13 @@ export default class App extends Component {
     StatusBar.setBackgroundColor('#d32f2f');
     StatusBar.setBarStyle('dark-content');
     return (
+      
       <Provider store={ store }>
-        <AuthLoadingScreen />
+        <Root>
+          <AuthLoadingScreen />
+        </Root>
       </Provider>
+      
     );
   }
 }

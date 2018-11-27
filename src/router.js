@@ -28,11 +28,12 @@ import Activity from './screens/customers/Activity';
 import Inquiry from './screens/customers/Inquiry';
 import Profile from './screens/customers/Profile';
 import ProductDetail from './screens/customers/ProductDetail';
+import SearchPage from './screens/utils/SearchPage';
 
 import VendorActivity from './screens/vendor/VendorActivity';
 import Product from './screens/vendor/Product';
 import Transaction from './screens/vendor/Transaction';
-import AddProduct from './screens/vendor/AddProduct';
+import ProductForm from './screens/vendor/components/ProductForm';
 
 import Login from './screens/Login';
 import Verification from './screens/Verification';
@@ -149,6 +150,20 @@ export const TabStack = createStackNavigator({
       },
       headerTintColor: "white"
     })
+  },
+  SearchPage: {
+    screen: SearchPage,
+    navigationOptions: () => ({
+      title: `Search Page`,
+      headerMode: 'screen',
+      headerStyle: {
+        backgroundColor:"#d32f2f"
+      },
+      headerTitleStyle: {
+        color: "white"
+      },
+      headerTintColor: "white"
+    })
   }
 },{
   initialRouteName: 'Tabs'
@@ -200,11 +215,11 @@ export const VendorTabStack = createStackNavigator({
   },
   ProductDetail: {
     screen: ProductDetail,
-    navigationOptions: () => ({
-      title: `Product Detail`,
+    navigationOptions: ({navigation}) => ({
+      title: 'Detail Product',
       headerMode: 'screen',
       headerStyle: {
-        backgroundColor:"blue"
+        backgroundColor:`${navigation.state.params.bgColor}`
       },
       headerTitleStyle: {
         color: "white"
@@ -212,8 +227,8 @@ export const VendorTabStack = createStackNavigator({
       headerTintColor: "white"
     })
   },
-  AddProduct: {
-    screen: AddProduct,
+  ProductForm: {
+    screen: ProductForm,
     navigationOptions: () => ({
       title: `Add Product`,
       headerMode: 'screen',
@@ -285,7 +300,7 @@ class AuthLoadingScreen extends React.Component {
             // this.props.signIn(res);
             // console.log("masuk sini");
             console.log("kepanggil lagi", res);
-            self.props.navigation.navigate("Explore", res);
+            self.props.navigation.navigate("Explore");
           }).catch((e)=>{
             // console.log("gapunya user", user.providerData[0].providerId);
             // if(user.providerData[0].providerId === 'google.com'){

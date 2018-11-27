@@ -12,20 +12,13 @@ import Calendar from 'react-native-calendar-select';
 
 import ItemReference from './components/ProductDetail/ItemReference';
 
-const datacarousel = [
-  {
-      "id": 339964,
-      "title": "Rp. 150.000/Hari",
-      // "subtitle": "More than just a trend",
-      "imagePath": "https://image.tmdb.org/t/p/w780/o6OhxtsgMurL4h68Uqei0aSPMNr.jpg",
-  },
-  {
-      "id": 315635,
-      "title": "Rp. 150.000/Hari",
-      // "subtitle": "More than just a trend",
-      "imagePath": "https://image.tmdb.org/t/p/w780/fn4n6uOYcB6Uh89nbNPoU2w80RV.jpg",
-  }
-];
+import * as utils from '../utils/RenderInput';
+import * as uploader from '../utils/ImageUploader';
+import * as dataServices from '../../services/DataServices';
+import * as _ from 'lodash';
+import Loader from '../utils/Loader';
+
+
 
 
 
@@ -34,10 +27,33 @@ class ProductDetail extends Component {
     super(props);
     this.state = {
       startDate: new Date(2017, 6, 12),  
-      endDate: new Date(2017, 8, 2)
+      endDate: new Date(2017, 8, 2),
+      data:{},
+      vendorProfile:{}
     };
     this.confirmDate = this.confirmDate.bind(this);
     this.openCalendar = this.openCalendar.bind(this);
+    this.datacarousel = [];
+
+    if(this.props.navigation.state.params != undefined){
+      
+      this.props.navigation.state.params.image.forEach(element => {
+        this.datacarousel.push({
+          "id": element,
+          "title": "Rp. "+ this.props.navigation.state.params.price,
+          // "subtitle": "More than just a trend",
+          "imagePath": element,
+        })
+      });
+      // console.log("uid ", this.props.navigation.state.params.uid)
+      var uid = this.props.navigation.state.params.uid;
+      dataServices.getProfileById(uid).then((res)=>{
+        this.setState({vendorProfile:res});
+      }).catch((err)=>{
+        console.log(err);
+      })
+    }
+    
   }
 
   confirmDate({startDate, endDate, startMoment, endMoment}) {
@@ -45,6 +61,14 @@ class ProductDetail extends Component {
       startDate,
       endDate
     });
+  }
+
+  async componentDidMount() {
+    this.setState({data:this.props.navigation.state.params});
+    
+    
+    console.log("params ", this.props.navigation.state.params);
+    
   }
 
   openCalendar() {
@@ -81,7 +105,7 @@ class ProductDetail extends Component {
                 Automotive & Industrial / Motor
               </Text>
               <Text style={{ fontSize: 24, fontWeight: '700', color:'#757575' }}>
-                  Introducing Rentokar 
+                {this.state.data.productName}
               </Text>
               <Grid>
                 <Row style={{marginTop:10}}>
@@ -110,7 +134,7 @@ class ProductDetail extends Component {
           <SwipeableParallaxCarousel 
               titleColor="white" 
               parallax={true} 
-              data={datacarousel}
+              data={this.datacarousel}
               navigation={true}
               navigationColor="white"
               />
@@ -119,11 +143,11 @@ class ProductDetail extends Component {
               <List>
                 <ListItem avatar noBorder>
                   <Left>
-                    <Thumbnail source={require('../../assets/img/experiences.jpg')} />
+                    <Thumbnail source={{uri:this.state.vendorProfile.photoURL}} />
                   </Left>
                   <Body>
-                    <Text>Toko Fikrizal Wahyudi</Text>
-                    <Text note>Depok</Text>
+                    <Text>{this.state.vendorProfile.fullName}</Text>
+                    <Text note>{this.state.data.city}</Text>
                   </Body>
                   <Right>
                     <Text note>Last Online 03:30</Text>
@@ -135,7 +159,7 @@ class ProductDetail extends Component {
                 </ListItem>
               </List>
             </View>
-            <View style={{backgroundColor: 'grey', padding:15}}>
+            {/* <View style={{backgroundColor: 'grey', padding:15}}>
               <Card  style={{paddingRight:  10}}> 
                 <List>
                   <ListItem style={{ flex: 1, justifyContent: 'center'}}>
@@ -148,40 +172,6 @@ class ProductDetail extends Component {
                    
                   </ListItem>
                 </List>
-                {/* <ListItem icon>
-                 
-                  <Body>
-                    <Text>Harga Sewa x 3 Hari</Text>
-                  </Body>
-                  <Right>
-                    <Text>Rp 500.000</Text>
-                  </Right>
-                </ListItem>
-                <ListItem icon>
-                  <Body>
-                    <Text>Total</Text>
-                  </Body>
-                  <Right>
-                    <Text>Rp 500.000</Text>
-                  </Right>
-                </ListItem>
-                <ListItem icon>
-                  <Body>
-                  <Item inlineLabel>
-                    <Icon active name="quote"  />
-                      <Input placeholder='Notes'/>
-                    </Item>
-                  </Body>
-                  
-                </ListItem>
-                <List style={{paddingLeft: 20, padding:10}}>
-                  
-                  <Button block >
-                    <Text>Submit</Text>
-                  </Button>
-                   
-                </List> */}
-              
                 <Calendar
                   i18n="en"
                   ref={(calendar) => {this.calendar = calendar;}}
@@ -195,9 +185,9 @@ class ProductDetail extends Component {
                   onConfirm={this.confirmDate}
                 /> 
               </Card>
-            </View>
+            </View> */}
             <View style={{padding:10, marginLeft: 10,}}>
-              <Text style={{ fontSize: 24, fontWeight: '700', color:'#757575'  }}>
+              {/* <Text style={{ fontSize: 24, fontWeight: '700', color:'#757575'  }}>
                   Spesifikasi
               </Text>
               <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', flexGrow: 0}}>
@@ -231,8 +221,8 @@ class ProductDetail extends Component {
                     <Icon name="calendar"  />
                     <Text>10Kg</Text>
                   </View>
-              </View>
-              <View style={{ borderTopColor: 'black', borderTopWidth: 0.5,marginTop: 15,marginRight: 5, }}>
+              </View> */}
+              {/* <View style={{ borderTopColor: 'black', borderTopWidth: 0.5,marginTop: 15,marginRight: 5, }}>
                 <Text style={{ fontSize: 24, fontWeight: '700', marginTop: 15,  color:'#757575'  }}>
                     Deskripsi Item
                 </Text>
@@ -241,9 +231,15 @@ class ProductDetail extends Component {
                   Jika Butuh Mobil Silah bulanan bisa hubungi ke nomor 08128123123
                   Jika Butuh Mobil Silah bulanan bisa hubungi ke nomor 08128123123
                 </Text>
+              </View> */}
+              <View >
+                <Text style={{ fontSize: 24, fontWeight: '700',  color:'#757575'  }}>
+                    Deskripsi Item
+                </Text>
+                <Text style={{marginLeft: 10,}}>
+                  {this.state.data.productDescription}
+                </Text>
               </View>
-              
-             
             </View>
             <View style={{backgroundColor:"grey", paddingTop:5}}>
               <View style={{backgroundColor:"white", marginTop: 5,}}>

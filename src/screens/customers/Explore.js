@@ -20,7 +20,6 @@ import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-goog
 
 import Loader from '../utils/Loader';
 
-// import Icon from 'react-native-vector-icons/Ionicons'
 import Category from './components/Explore/Category';
 import Home from './components/Explore/Home';
 import Tag from './components/Explore/Tag';
@@ -31,6 +30,8 @@ import * as categoryService from '../../services/DataServices';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addUser, signIn } from '../../actions/UserAction';
+
+import * as dataServices from '../../services/DataServices';
 
 const { height, width } = Dimensions.get('window')
 
@@ -46,19 +47,24 @@ class Explore extends React.Component {
             listCategory: [],
             userInfo: null,
             error: null,
-            isLoading: false
+            isLoading: false,
+            listProduct:[]
         };
          
 
       }
     
     async componentDidMount() {
-        var self = this;
+        // var self = this;
         await this.listenForCategory();
-        console.log("params", this.props.navigation.state.params);
-        if(this.props.navigation.state.params != undefined){
-            this.props.signIn(this.props.navigation.state.params);
-        }
+        dataServices.getAllProduct().then((res)=>{
+            console.log(res);
+            this.setState({listProduct:res});
+        })
+        // console.log("params", this.props.navigation.state.params);
+        // if(this.props.navigation.state.params != undefined){
+        //     this.props.signIn(this.props.navigation.state.params);
+        // }
         
         // setTimeout(function(){
         //     self.hideLoader();
@@ -101,34 +107,40 @@ class Explore extends React.Component {
     }
 
     
-    goToProductDetail = () => {
-        const resetAction = StackActions.reset({
-            index: 1,
-            actions: [
-              NavigationActions.navigate({
-                routeName: 'Tabs'
-              }),
-              NavigationActions.navigate({
-                routeName: 'ProductDetail'
-              })
-            ],
-            key: null
-        });
+    // goToProductDetail = (obj) => {
         
-        this.props.navigation.dispatch(resetAction);
-    }
+    //     // const resetAction = StackActions.reset({
+    //     //     index: 1,
+    //     //     actions: [
+    //     //       NavigationActions.navigate({
+    //     //         routeName: 'Tabs'
+    //     //       }),
+    //     //       NavigationActions.navigate({
+    //     //         routeName: 'ProductDetail'
+    //     //       })
+    //     //     ],
+    //     //     key: null
+    //     // });
+        
+    //     // this.props.navigation.dispatch(resetAction);
+    // }
 
     render() {
+        const prodArr = this.state.listProduct.filter(obj => obj.status != 2);
         return (
             <Container>
                 <Loader loading={this.state.isLoading} />
                 <Header style={{ backgroundColor: '#d32f2f' }} searchBar rounded androidStatusBarColor="#d32f2f" >
-                    <Item>
-                        <Icon name="ios-search" />
-                        <Input placeholder="Search" />
-                        <Icon name="ios-people" />
-                    </Item>
-                    <Button transparent>
+                    
+                        <Item >
+                            <Icon name="ios-search" />
+                            {/* <TouchableOpacity onPress={()=>this.props.navigation.navigate("SearchPage", e)}> */}
+                            <Input placeholder="Search" />
+                            {/* </TouchableOpacity> */}
+                            <Icon name="ios-people" />
+                        </Item>
+                    
+                    <Button transparent >
                         <Text>Search</Text>
                     </Button>
                 </Header>
@@ -188,14 +200,24 @@ class Explore extends React.Component {
                             Homes around the world
                         </Text>
                         <View style={{ paddingHorizontal: 20, marginTop: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                            <TouchableOpacity onPress={this.goToProductDetail} > 
-                            <Home width={width}
-                                name="The Cozy Place"
-                                type="PRIVATE ROOM - 2 BEDS"
-                                price={82}
-                                rating={4}
-                            />
-                            </ TouchableOpacity  > 
+                            {
+                                prodArr.map((e, key)=>{
+                                    e.bgColor = "#40c4ff";
+                                    return(
+                                        <TouchableOpacity onPress={()=>this.props.navigation.navigate("ProductDetail", e)} key={key}> 
+                                            <Home width={width}
+                                                name={e.productName}
+                                                type="PRIVATE ROOM - 2 BEDS"
+                                                price={82}
+                                                rating={4}
+                                                coverImg={e.coverImg}
+                                            />
+                                        </ TouchableOpacity  >
+                                    )
+                                })
+                            }
+
+                             
                             {/* <Home width={width}
                                 name="The Cozy Place"
                                 type="PRIVATE ROOM - 2 BEDS"
