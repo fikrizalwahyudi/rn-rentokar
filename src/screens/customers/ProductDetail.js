@@ -3,6 +3,7 @@ import {View, ScrollView,TouchableOpacity} from 'react-native';
 
 import {Card, CardItem, Title, Textarea, Container, Content, List, ListItem, InputGroup, ScrollableTab, Tab, Tabs, Header,Icon, H3, H2, H1, Form, Item, Input, Label, Button, Text, Thumbnail, Left, Body, Right, Switch } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import * as _ from 'lodash';
 
 import SwipeableParallaxCarousel from 'react-native-swipeable-parallax-carousel';
 
@@ -17,8 +18,6 @@ import * as uploader from '../utils/ImageUploader';
 import * as dataServices from '../../services/DataServices';
 import * as _ from 'lodash';
 import Loader from '../utils/Loader';
-
-
 
 
 
@@ -74,7 +73,6 @@ class ProductDetail extends Component {
   openCalendar() {
     this.calendar && this.calendar.open();
   }
-  
   
   render() {
     let customI18n = {
@@ -241,11 +239,29 @@ class ProductDetail extends Component {
                 </Text>
               </View>
             </View>
+
+            <View style={{backgroundColor:"grey", paddingTop:10}}>
+              <View style={{backgroundColor:"white", padding:10 }}>
+                <Text style={{ fontSize: 24, fontWeight: '700', color:'#757575', marginLeft: 10  }}>
+                    Order Sekarang
+                </Text>
+                <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', flexGrow: 0, marginLeft: 10, marginTop: 10, marginBottom: -10}}>
+                  <Button  small  bordered primary iconLeft onPress={this.openCalendar}>
+                    <Icon name="calendar"  />
+                    <Text>Pilih Tanggal</Text>
+                  </Button>
+                </View>    
+                
+                <OrderForm />
+                
+              </View>
+            </View>
+
             <View style={{backgroundColor:"grey", paddingTop:5}}>
               <View style={{backgroundColor:"white", marginTop: 5,}}>
               <View style={{marginLeft: 10}}>
                 <Text style={{ fontSize: 24, fontWeight: '700', marginTop: 15, marginLeft: 15, marginBottom: 10, color:'#757575'  }}>
-                    Product Terkait
+                    Produk Terkait
                 </Text>
                 <ScrollView
                     horizontal={true}
