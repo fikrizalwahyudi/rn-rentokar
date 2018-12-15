@@ -16,7 +16,6 @@ import ItemReference from './components/ProductDetail/ItemReference';
 import * as utils from '../utils/RenderInput';
 import * as uploader from '../utils/ImageUploader';
 import * as dataServices from '../../services/DataServices';
-import * as _ from 'lodash';
 import Loader from '../utils/Loader';
 
 
@@ -252,7 +251,7 @@ class ProductDetail extends Component {
                   </Button>
                 </View>    
                 
-                <OrderForm />
+                {/* <OrderForm /> */}
                 
               </View>
             </View>
